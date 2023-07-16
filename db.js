@@ -1,10 +1,13 @@
 const mongoose = require("mongoose");
 
 // Connect to the database
-mongoose.connect("mongodb://localhost:27017/love_keeper", {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
-});
+mongoose.connect(
+	"mongodb+srv://qkrehdrb0813:ehdfprl77@cluster0.w9mqdtx.mongodb.net/love_keeper",
+	{
+		useNewUrlParser: true,
+		useUnifiedTopology: true,
+	}
+);
 
 const db = mongoose.connection;
 
