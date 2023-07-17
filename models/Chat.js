@@ -1,31 +1,27 @@
 const mongoose = require("mongoose");
 
-const chattingSchema = new mongoose.Schema({
-	chattingContent: {
-		type: String,
-		required: true,
-	},
-	chattingTime: {
-		type: Date,
-		default: Date.now,
-		required: true,
-	},
-	checkStatus: {
-		type: Boolean,
-		required: true,
-	},
-	userID: {
+const chatSchema = new mongoose.Schema({
+	from: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "User",
 		required: true,
 	},
-	chattingRoomID: {
+	to: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: "chattingRoom",
+		ref: "User",
+		required: true,
+	},
+	body: {
+		type: String,
+		required: true,
+	},
+	timestamp: {
+		type: Date,
+		default: Date.now,
 		required: true,
 	},
 });
 
-const Chatting = mongoose.model("Chatting", chattingSchema);
+const Chat = mongoose.model("Chat", chatSchema);
 
-module.exports = Chatting;
+module.exports = Chat;

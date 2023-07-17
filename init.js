@@ -9,7 +9,6 @@ const Post = require("./models/Post");
 const Patch = require("./models/Patch");
 const Rule = require("./models/Rule");
 const Chat = require("./models/Chat");
-const ChattingRoom = require("./models/ChattingRoom");
 const BannedWord = require("./models/BannedWord");
 
 const app = require("./server");
