@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 // Connect to the database
-mongoose.connect(
+await mongoose.connect(
 	"mongodb+srv://qkrehdrb0813:ehdfprl77@cluster0.w9mqdtx.mongodb.net/love_keeper",
 	{
 		useNewUrlParser: true,
