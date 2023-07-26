@@ -1,12 +1,25 @@
 const Letter = require("../models/Letter");
 const User = require("../models/User");
 
-const getSentLetters = async (req, res) => {
+exports.getSentLetters = async (req, res) => {
+	const {
+		session: {
+			user: { _id, sentLetters },
+		},
+	} = req;
+
+	const user = await User.findById(_id).populate("sentLetters");
+
+	return res.json(user.sentLetters);
+};
+
+exports.postLetter = async (req, res) => {
 	const {
 		session: {
 			user: { _id },
 		},
+		body: { letter },
 	} = req;
-};
 
-const postLetter = async (req, res) => {};
+	const newLetter = await Letter.create({});
+};
