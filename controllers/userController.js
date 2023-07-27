@@ -18,7 +18,7 @@ exports.postLetter = async (req, res) => {
 		session: {
 			user: { _id },
 		},
-		body: { letter },
+		body: { letter }, // 클라이언트에서 보내주는 letter의 구조를 안 후에 작성하도록.
 	} = req;
 
 	const newLetter = await Letter.create({});
