@@ -13,13 +13,35 @@ exports.getSentLetters = async (req, res) => {
 	return res.json(user.sentLetters);
 };
 
-exports.postLetter = async (req, res) => {
+exports.sendLetter = async (req, res) => {
 	const {
 		session: {
-			user: { _id },
+			user: { _id, partnerId },
 		},
-		body: { letter }, // 클라이언트에서 보내주는 letter의 구조를 안 후에 작성하도록.
+		body: {
+			reasonForReconciliation,
+			reasonForOccurrence,
+			currentFeelings,
+			waysToMaintainRelationship,
+			apologyWithLove,
+			letter,
+		}, // 클라이언트에서 보내주는 letter의 구조를 안 후에 작성하도록.
 	} = req;
+	try {
+		const newLetter = await Letter.create({
+			reasonForReconciliation,
+			reasonForOccurrence,
+			currentFeelings,
+			waysToMaintainRelationship,
+			apologyWithLove,
+			letter,
+		});
+		const user = await User.findById(_id);
+		user.sentLetters.push(newLetter._id);
 
-	const newLetter = await Letter.create({});
+		const partner = await User.findById(_id);
+		partner.receivedLetters.push(newLetter._id);
+	} catch (err) {
+		return res.status(400).json({ err });
+	}
 };

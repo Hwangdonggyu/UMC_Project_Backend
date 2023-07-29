@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema({
 	age: { type: Number, required: true },
 	bloodType: { type: String, required: true },
 	imageUrl: { type: String },
-	started_date: { type: Date, required: true },
+	startedDate: { type: Date, required: true },
 	birthday: { type: Date, required: true },
 	connectCode: { type: String, required: true, unique: true },
 	partnerId: { type: String, required: true, unique: true },
