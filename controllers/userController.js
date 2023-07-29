@@ -13,7 +13,7 @@ exports.getSentLetters = async (req, res) => {
 	return res.json(user.sentLetters);
 };
 
-exports.sendLetter = async (req, res) => {
+exports.postSentLetter = async (req, res) => {
 	const {
 		session: {
 			user: { _id, partnerId },
@@ -44,4 +44,16 @@ exports.sendLetter = async (req, res) => {
 	} catch (err) {
 		return res.status(400).json({ err });
 	}
+};
+
+exports.getReceivedLetters = async (req, res) => {
+	const {
+		session: {
+			user: { _id },
+		},
+	} = req;
+
+	const user = await User.findById(_id).populate("receivedLetters");
+
+	return res.json(user.receivedLetters);
 };
