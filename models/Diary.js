@@ -16,7 +16,7 @@ const diarySchema = mongoose.Schema({
 			type: String,
 		},
 	],
-	created_at: {
+	createdAt: {
 		type: Date,
 		default: Date.now,
 		required: true,

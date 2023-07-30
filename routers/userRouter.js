@@ -4,6 +4,7 @@ const {
 	getSentLetters,
 	postSentLetter,
 	getReceivedLetters,
+	getLetter,
 } = require("../controllers/userController");
 const { protectorMiddleware, publicOnlyMiddleware } = require("../middlewares");
 
@@ -18,5 +19,10 @@ userRouter
 	.all(protectorMiddleware)
 	.get(getReceivedLetters);
 userRouter.route("/sendLetter").all(protectorMiddleware).post(postSentLetter);
+
+userRouter
+	.route("/viewLetter/:letterId(([a-f0-9]{24}))")
+	.all(protectorMiddleware)
+	.get(getLetter);
 
 module.exports = userRouter;

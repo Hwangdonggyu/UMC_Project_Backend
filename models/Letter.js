@@ -41,6 +41,11 @@ const letterSchema = new mongoose.Schema({
 		ref: "User",
 		required: true,
 	},
+	read: {
+		type: Boolean,
+		default: false,
+		required: true,
+	},
 });
 
 // Create the model using the schema

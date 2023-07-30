@@ -13,7 +13,19 @@ exports.getSentLetters = async (req, res) => {
 	return res.json(user.sentLetters);
 };
 
-exports.postSentLetter = async (req, res) => {
+exports.getReceivedLetters = async (req, res) => {
+	const {
+		session: {
+			user: { _id },
+		},
+	} = req;
+
+	const user = await User.findById(_id).populate("receivedLetters");
+
+	return res.json(user.receivedLetters);
+};
+
+exports.postSendLetter = async (req, res) => {
 	const {
 		session: {
 			user: { _id, partnerId },
@@ -35,6 +47,8 @@ exports.postSentLetter = async (req, res) => {
 			waysToMaintainRelationship,
 			apologyWithLove,
 			letter,
+			from: _id,
+			to: partnerId,
 		});
 		const user = await User.findById(_id);
 		user.sentLetters.push(newLetter._id);
@@ -46,14 +60,12 @@ exports.postSentLetter = async (req, res) => {
 	}
 };
 
-exports.getReceivedLetters = async (req, res) => {
+exports.getLetter = async (req, res) => {
 	const {
-		session: {
-			user: { _id },
-		},
+		params: { letterId },
 	} = req;
 
-	const user = await User.findById(_id).populate("receivedLetters");
+	const letter = await Letter.findById(letterId);
 
-	return res.json(user.receivedLetters);
+	return res.json(letter);
 };

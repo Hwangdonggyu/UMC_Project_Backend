@@ -28,8 +28,8 @@ const UserSchema = new mongoose.Schema({
 		},
 	],
 
-	//  created_date: {type: Date  , required: true},
-	//  modified_date:{type: Date  , required: true},
+	//  createdDate: {type: Date  , required: true},
+	//  modifiedDate:{type: Date  , required: true},
 });
 
 const User = mongoose.model("User", UserSchema);

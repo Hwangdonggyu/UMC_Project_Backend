@@ -10,7 +10,7 @@ const ruleSchema = mongoose.Schema({
 		type: String,
 		maxLength: 200,
 	},
-	created_at: {
+	createdAt: {
 		type: Date,
 		default: Date.now,
 	},
