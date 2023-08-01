@@ -5,10 +5,10 @@ const fs = require('fs')
 const app = express()
 const server = http.createServer(app)
 const io = socket(server)
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 // MongoDB
-mongoose.connect('mongodb://localhost/chat', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb+srv://qkrehdrb0813:ehdfprl77@cluster0.w9mqdtx.mongodb.net/love_keeper', { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Successfully connected to mongodb'))
   .catch(e => console.error(e))
 
