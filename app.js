@@ -60,6 +60,7 @@ io.sockets.on('connection', function(socket) {
     
     console.log(data)
     const Message = require('./models/messageModel');
+    
     /* db 저장 */
     const message = new Message({ name: data.name, message: data.message })
     message.save()
