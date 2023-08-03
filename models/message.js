@@ -1,9 +1,23 @@
 const mongoose = require('mongoose')
 
 const messageSchema = new mongoose.Schema({
-  name: String,
-  message: String,
-  date: { type: Date, default: Date.now }
+  /*user name for socket.io*/
+  name: {
+		type: String,
+		required: true,
+		unique: true,
+	},
+  message: {
+		type: String,
+		required: true,
+		maxLength: 200,
+	},
+  date: { 
+    type: Date,
+    default: Date.now
+  }
 })
 
-module.exports = mongoose.model('Message', messageSchema)
+const Message = mongoose.model('Message', messageSchema);
+
+module.exports = Message;

@@ -36,6 +36,20 @@ exports.saveBannedWord = [
   },
 ];
 
+exports.getbannedWord = async (req, res, next) => {
+  try {
+    const bannedWord = await BannedWord.findById(req.params.id).exec();
+    if (!bannedWord) {
+      return res.status(404).send('BannedWord not found');
+    }
+    logger.info('BannedWord with id ${req.params.id} retrieved');
+    res.status(200).json(bannedWord);
+  } catch (e) {
+    logger.error(e);
+    next(e);
+  }
+};
+
 exports.updateBannedWord = async (req, res, next) => {
   try {
     const { bannedWordTxt, reason, substitution } = req.body;
@@ -45,9 +59,9 @@ exports.updateBannedWord = async (req, res, next) => {
       { new: true }
     ).exec();
     if (!bannedWord) {
-      return res.status(404).send("BannedWord not found");
+      return res.status(404).send('BannedWord not found');
     }
-    logger.info(`BannedWord with id ${req.params.id} updated`);
+    logger.info('BannedWord with id ${req.params.id} updated');
     res.status(200).json(bannedWord);
   } catch (e) {
     logger.error(e);
@@ -59,10 +73,10 @@ exports.deleteBannedWord = async (req, res, next) => {
   try {
     const bannedWord = await BannedWord.findByIdAndDelete(req.params.id).exec();
     if (!bannedWord) {
-      return res.status(404).send("BannedWord not found");
+      return res.status(404).send('BannedWord not found');
     }
     logger.info('BannedWord deleted');
-    res.status(200).send("BannedWord deleted");
+    res.status(200).send('BannedWord deleted');
   } catch (e) {
     logger.error(e);
     next(e);

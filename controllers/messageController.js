@@ -43,7 +43,7 @@ exports.getMessage = async (req, res, next) => {
     if (!message) {
       return res.status(404).send('Message not found');
     }
-    logger.info(`Message with id ${req.params.id} retrieved`);
+    logger.info('Message with id ${req.params.id} retrieved');
     res.status(200).json(message);
   } catch (e) {
     logger.error(e);
