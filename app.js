@@ -9,7 +9,7 @@ const mongoose = require('mongoose')
 
 // MongoDB
 mongoose.connect('mongodb+srv://qkrehdrb0813:ehdfprl77@cluster0.w9mqdtx.mongodb.net/love_keeper', { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Successfully connected to mongodb'))
+  .then(() => console.log('connected to mongodb'))
   .catch(e => console.error(e))
 
 app.use('/css', express.static('./static/css'))
@@ -39,7 +39,7 @@ io.sockets.on('connection', function(socket) {
     /* 이름 저장 */
     socket.name = name
 
-    /* 접속 공지 */
+    /* 접속 공지 전송*/
     io.sockets.emit('update', {type: 'connect', name: 'SERVER', message: name + '님이 접속하였습니다.'})
   })
 
@@ -59,7 +59,7 @@ io.sockets.on('connection', function(socket) {
     data.name = socket.name
     
     console.log(data)
-    const Message = require('./models/messageModel');
+    const Message = require('./models/message');
     
     /* db 저장 */
     const message = new Message({ name: data.name, message: data.message })
@@ -67,9 +67,15 @@ io.sockets.on('connection', function(socket) {
       .then(() => console.log('Message saved'))
       .catch(e => console.error(e))
 
-    /* 메시지 전송 */
+    /* 나 빼고 상대에게 메시지 전송*/
     socket.broadcast.emit('update', data);
   })
+
+// 클라이언트 측 'update' 이벤트를 수신하고 처리하는 코드 필요
+// socket.on('update', (data) => {
+//   console.log(data);
+// });
+
   
 
   /* 접속 종료 */
