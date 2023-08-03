@@ -1,0 +1,26 @@
+extends layout.pug 
+
+block header
+    h1 편지 보내기
+
+block content 
+    form(method="POST")
+        label(for="reasonForReconciliation") 편지를 작성하게 된 계기가 무엇인가요?
+        input(type="text" name="reasonForReconciliation" id="reasonForReconciliation")
+
+        label(for="reasonForOccurrence") 왜 그런 일이 일어났나요?
+        input(type="text" name="reasonForOccurrence" id="reasonForOccurrence")
+
+        label(for="currentFeelings") 현재 본인의 감정은 어떠한가요?
+        input(type="text" name="currentFeelings" id="currentFeelings")
+        
+        label(for="waysToMaintainRelationship") 관계 유지를 위한 개선 방안은 무엇인가요?
+        input(type="text" name="waysToMaintainRelationship" id="waysToMaintainRelationship")
+        
+        label(for="apologyWithLove") 사랑이 담긴 사과의 말을 전해주세요
+        input(type="text" name="apologyWithLove" id="apologyWithLove")
+        
+        label(for="letter") 내 맘대로 쓸게요.
+        input(type="text" name="letter" id="letter")
+
+        input(type="submit" value="전송")

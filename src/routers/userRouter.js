@@ -2,27 +2,28 @@ const express = require("express");
 
 const {
 	getSentLetters,
-	postSentLetter,
+	postSendLetter,
 	getReceivedLetters,
 	getLetter,
+	getSendLetter,
 } = require("../controllers/userController");
 const { protectorMiddleware, publicOnlyMiddleware } = require("../middlewares");
 
 const userRouter = express.Router();
 
 userRouter
-	.route("/getSendLetters")
-	.all(protectorMiddleware)
+	.route("/getSentLetters")
+	// .all(protectorMiddleware)
 	.get(getSentLetters);
 userRouter
 	.route("/getReceivedLetters")
-	.all(protectorMiddleware)
+	// .all(protectorMiddleware)
 	.get(getReceivedLetters);
-userRouter.route("/sendLetter").all(protectorMiddleware).post(postSentLetter);
+userRouter.route("/sendLetter").get(getSendLetter).post(postSendLetter);
 
 userRouter
 	.route("/viewLetter/:letterId(([a-f0-9]{24}))")
-	.all(protectorMiddleware)
+	// .all(protectorMiddleware)
 	.get(getLetter);
 
 module.exports = userRouter;
