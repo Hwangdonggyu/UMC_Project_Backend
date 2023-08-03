@@ -1,5 +1,5 @@
 const { check, validationResult } = require('express-validator');
-const Message = require('./models/message');
+const Message = require('../models/message');
 const winston = require('winston');
 
 // 요청, 응답, 에러 정보 로깅

@@ -1,5 +1,5 @@
 const { check, validationResult } = require('express-validator');
-const BannedWord = require('./models/bannedWord');
+const BannedWord = require('../models/bannedWord');
 const winston = require('winston');
 
 // 요청, 응답, 에러 정보 로깅
@@ -36,7 +36,7 @@ exports.saveBannedWord = [
   },
 ];
 
-exports.getbannedWord = async (req, res, next) => {
+exports.getBannedWord = async (req, res, next) => {
   try {
     const bannedWord = await BannedWord.findById(req.params.id).exec();
     if (!bannedWord) {
