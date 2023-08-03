@@ -1,12 +1,9 @@
-const controller = require('./controller');
+const express = require('express');
+const router = express.Router();
+const messageController = require('./controllers/messageController');
 
-// Create: 메시지 저장
-app.post('/message', controller.saveMessage);
+router.post('/', messageController.saveMessage);
+router.get('/:id', messageController.getMessage);
+router.delete('/:id', messageController.deleteMessage);
 
-// Read: 특정 메시지 읽어오기(ID를 경로 파라미터로 받음)
-app.get('/message/:id', controller.getMessage);
-
-// Delete: 특정 메시지 삭제 (ID를 경로 파라미터로 받음)
-app.delete('/message/:id', controller.deleteMessage);
-
-app.use(controller.errorHandler);
+module.exports = router;

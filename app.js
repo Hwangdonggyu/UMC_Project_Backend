@@ -6,6 +6,8 @@ const app = express()
 const server = http.createServer(app)
 const io = socket(server)
 const mongoose = require('mongoose')
+const bannedWordRouter = require('./routers/bannedWordRouter');
+const messageRouter = require('./routers/messageRouter');
 
 // MongoDB
 mongoose.connect('mongodb+srv://qkrehdrb0813:ehdfprl77@cluster0.w9mqdtx.mongodb.net/love_keeper', { useNewUrlParser: true, useUnifiedTopology: true })
@@ -14,6 +16,8 @@ mongoose.connect('mongodb+srv://qkrehdrb0813:ehdfprl77@cluster0.w9mqdtx.mongodb.
 
 app.use('/css', express.static('./static/css'))
 app.use('/js', express.static('./static/js'))
+app.use('/bannedWord', bannedWordRouter);
+app.use('/message', messageRouter);
 
 /* Get 방식으로 / 경로에 접속하면 실행 됨 */
 app.get('/', function(request, response) {
