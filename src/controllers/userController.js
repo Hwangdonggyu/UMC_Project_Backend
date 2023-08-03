@@ -11,7 +11,7 @@ exports.getSentLetters = async (req, res) => {
 
 	const user = await User.findById(_id).populate("sentLetters");
 
-	return res.status(200).json(user.sentLetters);
+	return res.status(200).json(user.sentLetters).sort({ createdAt: -1 }); // 최신순으로 정렬.
 };
 
 // 받은 편지함 내역 보기
@@ -24,7 +24,7 @@ exports.getReceivedLetters = async (req, res) => {
 
 	const user = await User.findById(_id).populate("receivedLetters");
 
-	return res.status(200).json(user.receivedLetters);
+	return res.status(200).json(user.receivedLetters).sort({ createdAt: -1 }); // 최신순으로 정렬.
 };
 
 // 편지 보내기 화면 보기.
@@ -82,6 +82,7 @@ exports.getLetter = async (req, res) => {
 	} = req;
 
 	const letter = await Letter.findById(letterId);
+	if (!letter) return res.sendStatus(404); // 편지 없음.
 
-	return res.json(letter);
+	return res.status(200).json(letter); //
 };

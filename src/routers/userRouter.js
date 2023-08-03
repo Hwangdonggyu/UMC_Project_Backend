@@ -22,7 +22,7 @@ userRouter
 userRouter.route("/sendLetter").get(getSendLetter).post(postSendLetter);
 
 userRouter
-	.route("/viewLetter/:letterId(([a-f0-9]{24}))")
+	.route("/letter/:letterId(([a-f0-9]{24}))")
 	// .all(protectorMiddleware)
 	.get(getLetter);
 
