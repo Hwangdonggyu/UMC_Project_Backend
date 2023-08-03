@@ -1,18 +1,20 @@
 const mongoose = require("mongoose");
+const date = require('../moment');
 
-const ruleSchema = mongoose.Schema({
+const ruleSchema = new mongoose.Schema({
 	writer: {
-		type: mongoose.Types.ObjectId,
+		type: mongoose.Schema.Types.ObjectId,
 		ref: "User",
 		required: true,
 	},
 	content: {
 		type: String,
 		maxLength: 200,
+		required: true,
 	},
 	created_at: {
-		type: Date,
-		default: Date.now,
+		type: String,
+		default: date,
 	},
 });
 

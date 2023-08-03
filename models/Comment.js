@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 
-const commentSchema = mongoose.Schema({
+const commentSchema = new mongoose.Schema({
 	diary: {
-		type: mongoose.Types.ObjectId,
+		type: mongoose.Schema.Types.ObjectId,
 		ref: "Diary",
 		required: true,
 	},
@@ -21,6 +21,11 @@ const commentSchema = mongoose.Schema({
 		default: Date.now,
 		required: true,
 	},
+	replyTo: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "Comment",
+		required: false
+	}
 });
 
 const Comment = mongoose.model("Comment", commentSchema);

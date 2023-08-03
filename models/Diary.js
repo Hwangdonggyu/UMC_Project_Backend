@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 
-const diarySchema = mongoose.Schema({
+const diarySchema = new mongoose.Schema({
 	writer: {
-		type: mongoose.Types.ObjectId,
+		type: mongoose.Schema.Types.ObjectId,
 		ref: "User",
 		required: true,
 	},
