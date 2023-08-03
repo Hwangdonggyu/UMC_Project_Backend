@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const date = require('../moment');
+const date = require("../moment");
 
 const ruleSchema = new mongoose.Schema({
 	writer: {
@@ -12,9 +12,9 @@ const ruleSchema = new mongoose.Schema({
 		maxLength: 200,
 		required: true,
 	},
-	created_at: {
+	createdAt: {
 		type: String,
-		default: date,
+		default: date(),
 	},
 });
 

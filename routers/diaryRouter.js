@@ -8,10 +8,11 @@ diaryRouter.route('/rules')
 diaryRouter.route('/rules/:ruleId')
     .patch(diaryController.patchRule)
     .delete(diaryController.deleteRule);
-/**
+/** 
 diaryRouter.route('/board')
     .get(diaryController.getDiaries)
-    .post(diaryController.postDiary)
+    .post(diaryController.postDiary);
+diaryRouter.route('/board/:diaryId')
     .patch(diaryController.patchDiary)
     .delete(diaryController.deleteDiary)
  */

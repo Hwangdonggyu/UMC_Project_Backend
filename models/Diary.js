@@ -1,9 +1,13 @@
 const mongoose = require("mongoose");
 
 const diarySchema = new mongoose.Schema({
-	writer: {
+	writeId: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "User",
+		required: true,
+	},
+	writerName: {
+		type: String,
 		required: true,
 	},
 	content: {
@@ -16,10 +20,15 @@ const diarySchema = new mongoose.Schema({
 			type: String,
 		},
 	],
+	comment: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Comment",
+		}
+	],
 	created_at: {
 		type: Date,
-		default: Date.now,
-		required: true,
+		default: () => Date.now() + KR_TIME_DIFF,
 	},
 });
 

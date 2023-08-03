@@ -14,23 +14,23 @@ const diaryController = {
     getRules: async (req, res) => {
         const userId = new ObjectId(req.body.userId);
 
-        let rules = await Rule.find({writer: userId}, {content: 1, created_at: 1});
+        let rules = await Rule.find({writer: userId}, {content: 1, createdAt: 1});
         
         const partner = await User.findById(userId, 'partnerId');
         
         //파트너가 작성한 규칙들 반환
         if (partner){
             const partnerId = new ObjectId(partner.partnerId);
-            const rulesByPartner = await Rule.find({writer: partnerId}, {content:1 , created_at: 1});
+            const rulesByPartner = await Rule.find({writer: partnerId}, {content:1 , createdAt: 1});
             rules = rules.concat(rulesByPartner);
         }
 
-        //생성된 날짜순으로 정렬(오름차순)
-        const sortedRules = rules.sort((a,b) => {
-            return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-        });
+        //생성된 날짜순으로 정렬(최신순)
+        const result = rules.sort((a,b) => {
+            return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        }).reverse();
 
-        return res.status(200).send({"result" : sortedRules});
+        return res.status(200).send({result});
     },
 
     /**
@@ -47,7 +47,7 @@ const diaryController = {
         
         const result = await rule.save();
 
-        return res.status(200).send({"result": result});
+        return res.status(200).send({result});
     },
 
     /**
@@ -60,7 +60,7 @@ const diaryController = {
 
             const result = await Rule.findByIdAndUpdate(ruleId, {
                 content: content,
-                created_at: date
+                createdAt: date()
             });
 
             return res.status(200).end();
@@ -86,6 +86,9 @@ const diaryController = {
     },
 
     //Diary
+    /**
+     * [GET] /diary/board/:diaryId
+     */
     getDiaries: async(req, res) => {
         
     }
