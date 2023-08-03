@@ -91,6 +91,15 @@ io.sockets.on('connection', function(socket) {
   })
 })
 
+app.use((req, res) => {
+  res.status(404).send('Not found');
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke');
+});
+
 /* 8080 포트로 listen */
 server.listen(8080, function() {
   console.log('서버 실행 중..')
