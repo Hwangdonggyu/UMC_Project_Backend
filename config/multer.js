@@ -11,7 +11,6 @@ const upload = multer({
             cb(null, filename);
         },
         destination(req, file, cb){
-            console.log(file);
             cb(null, 'uploads/');   //uploads 폴더가 미리 존재해야 함
         }
     }),

@@ -1,98 +1,101 @@
 const Diary = require("../models/Diary");
-const Rule = require("../models/Rule");
 const Comment = require("../models/Comment");
 const User = require("../models/User");
 const { ObjectId } = require("mongodb");
 const date = require("../config/moment");
 
 const diaryController = {
-    
-    //Rule
-    /**
-     * [GET] /diary/rules
-     */
-    getRules: async (req, res) => {
-        const userId = new ObjectId(req.body.userId);
 
-        let rules = await Rule.find({writer: userId}, {content: 1, createdAt: 1});
-        
+    /**
+     * [GET] /diary/board
+     */
+    getDiaries: async(req, res) => {
+
+        const userId = new ObjectId(req.body.userId);
+        const view = 'writer content img.filename comment createdAt'
+        let diaries = await Diary.find({writer: userId}).populate('writer', 'nickname').select(view);
+
         const partner = await User.findById(userId, 'partnerId');
         
-        //파트너가 작성한 규칙들 반환
+        //파트너가 작성한 diary들 반환
+        
         if (partner){
             const partnerId = new ObjectId(partner.partnerId);
-            const rulesByPartner = await Rule.find({writer: partnerId}, {content:1 , createdAt: 1});
-            rules = rules.concat(rulesByPartner);
+            const diariesByPartner = await Diary.find({writer: partnerId});
+            diaries = diaries.concat(diariesByPartner);
         }
 
+        //result 형식
+        const resultArr = [];
+        const url = "http://localhost:4000/img/uploads/"
+        for (const val of diaries) {
+            resultArr.push({
+                _id: val._id,
+                writer: val.writer.nickname,
+                content: val.content,
+                img: val.img.map((item) => { return url + item.filename }),
+                comment: val.comment.length,
+                createdAt: val.createdAt
+            })
+        }
         //생성된 날짜순으로 정렬(최신순)
-        const result = rules.sort((a,b) => {
+        const result = resultArr.sort((a,b) => {
             return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
         }).reverse();
 
         return res.status(200).send({result});
+        
     },
-
     /**
-     * [POST] /diary/rules
+     * [POST] /diary/board
      */
-    postRule: async (req, res) => {
+    postDiary: async(req, res) => {
         const userId = new ObjectId(req.body.userId);
         const content = req.body.content;
+        const images = req.files;
 
-        const rule = new Rule({
+        const diary = new Diary({
             writer: userId,
-            content: content
+            content: content,
+            img: images,
         })
         
-        const result = await rule.save();
-
-        return res.status(200).send({result});
+        const result = await diary.save();
+        id = result._id;
+        console.log(result);
+        return res.status(200).send({result: {"_id" : id}});
     },
-
-    /**
-     * [PATCH] /diary/rules/:ruleId
-     */
-    patchRule: async (req, res) => {
-        try{
-            const ruleId = new ObjectId(req.params.ruleId);
-            const content = req.body.content;
-
-            const result = await Rule.findByIdAndUpdate(ruleId, {
-                content: content,
-                createdAt: date()
-            });
-
-            return res.status(200).end();
-        } catch(err){
-            console.log(err);
-            return res.status(500).end();
-        }
-    },
-
-    /**
-     * [DELETE] /diary/rules/:ruleId
-     */
-    deleteRule: async (req, res) => {
-        try{
-            const ruleId = new ObjectId(req.params.ruleId);
-            const result = await Rule.findByIdAndDelete(ruleId);
-    
-            return res.status(200).end();
-        } catch(err){
-            console.log(err);
-            return res.status(500).end();
-        }
-    },
-
-    //Diary
     /**
      * [GET] /diary/board/:diaryId
      */
-    getDiaries: async(req, res) => {
-        
-    }
+    getDiaryById: async(req, res) => {
+        const userId = new ObjectId(req.body.userId);
 
+    },
+    /**
+     * [PATCH] /diary/board/:diaryId
+     */
+    patchDiary: async(req, res) => {
+
+    },
+    /**
+     * [DELETE] /diary/board/:diaryId
+     */
+    deleteDiary: async(req, res) => {
+
+    },
+    /**
+     * [POST] /diary/board/:diaryId/comments
+     */
+    postComment: async(req, res) => {
+
+    },
+    /**
+     * [DELETE] /diary/board/:diaryId/:commentId
+     */
+    deleteComment: async(req, res) => {
+
+    }
 }
 
 module.exports = diaryController;

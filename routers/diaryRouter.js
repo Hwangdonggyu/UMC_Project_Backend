@@ -1,29 +1,28 @@
 const express = require("express");
+const ruleController = require("../controllers/ruleController");
 const diaryController = require("../controllers/diaryController");
 const diaryRouter = express.Router();
 const uploadMiddleware = require('../config/multer');
 
+//rule
 diaryRouter.route('/rules')
-    .get(diaryController.getRules)
-    .post(diaryController.postRule);
+    .get(ruleController.getRules)
+    .post(ruleController.postRule);
 diaryRouter.route('/rules/:ruleId')
-    .patch(diaryController.patchRule)
-    .delete(diaryController.deleteRule);
+    .patch(ruleController.patchRule)
+    .delete(ruleController.deleteRule);
 
-/**
+//diary
 diaryRouter.route('/board')
     .get(diaryController.getDiaries)
-    .post(diaryController.postDiary);
+    .post(uploadMiddleware, diaryController.postDiary);
 diaryRouter.route('/board/:diaryId')
-    .patch(diaryController.patchDiary)
+    .get(diaryController.getDiaryById)
+    .put(diaryController.patchDiary)
     .delete(diaryController.deleteDiary);
 
-//댓글
-diaryRouter.route('/board/:diaryId/comments')
-    .post(diaryController.postCommet)
-    .delete(diaryController.deleteComment);
-*/
-diaryRouter.post('/upload', uploadMiddleware, (req, res) => {
-    console.log(req.files);
-})
+//comment
+diaryRouter.post('/board/:diaryId/comments',diaryController.postComment);
+diaryRouter.delete('/board/:diaryId/:commentId',diaryController.deleteComment);
+
 module.exports = diaryRouter;
