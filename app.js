@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
+const Controllers = require("./src/models")
 const mongoose = require('mongoose');
+require("./db");
 
 const app = express();
 
@@ -10,10 +12,18 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// CONNECT TO MONGODB SERVER
-mongoose
-  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Successfully connected to mongodb'))
-  .catch(e => console.error(e));
+// Databases
+const Comment = require("./models/Comment");
+const Diary = require("./models/Diary");
+const User = require("./models/User");
+const Letter = require("./models/Letter");
+const Rule = require("./models/Rule");
+const Chat = require("./models/Chat");
+const BannedWord = require("./models/BannedWord");
+
+Controllers.forEach((controller) => {
+  app.use(controller.path, controller.router);
+});
+
 
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));

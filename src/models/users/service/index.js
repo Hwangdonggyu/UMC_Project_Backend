@@ -1,111 +1,128 @@
-const database = require("../../../database");
+const User = require("../../../../models/User");
+
 
 class UserService {
-  // findById, findMany, create, update, delete
 
   async checkUserByEmail(email) {
-    const user = await database.user.findUnique({
-      where: {
-        email,
-      },
-    });
-
-    if (!user) return false;
-
+    const user = await User.findOne({ email });
+  
+    if (!user) {
+      throw { status: 404, message: "유저를 찾을 수 없습니다." };
+    }
+  
     return user;
   }
+
 
   async findUserById(id) {
-    const user = await database.user.findUnique({
-      where: {
-        id,
-      },
-    });
-
-    if (!user) throw { status: 404, message: "유저를 찾을 수 없습니다." };
+    const user = await User.findById(id);
+  
+    if (!user) {
+      throw { status: 404, message: "유저를 찾을 수 없습니다." };
+    }
     return user;
   }
 
+  async checkCoupleConnect(code) {
+    const users = await User.find({ connectCode: code });
+
+    if (!users || users.length === 0) {
+      throw { status: 404, message: "연결된 유저를 찾을 수 없습니다." };
+    }
+  
+    return users;
+  }
+  
+
+
   async findUsers({ skip, take }) {
-    const users = await database.user.findMany({
-      where: {},
-      skip,
-      take, // pagination이지만 지워도 무방?
-    });
-
-    const count = await database.user.count();
-
+    const users = await User.find({}); // find 메서드에 조건을 지정하지 않음
+  
+    const count = await User.countDocuments({}); // countDocuments 메서드로 변경
+  
     return {
       users,
       count,
     };
   }
 
+
+  async checkDuplicateConnectCode(connectCode) {
+    const count = await User.count({ connectCode });
+    return count === 2;
+  }
+  
   async createUser(props) {
-    const newUser = await database.user.create({
-      data: {
-        nickname : props.nickname,
-        email : props.email,
-        password : props.password,
-        phone : props.phone,
-        age : props.age,
-        bloodType : props.bloodType,
-        imageUrl : props.imageUrl,
-        started_date : props.started_date,
-        birthday : props.birthday,
-        connectCode : props.connectCode// 커플 연결 코드
-      },
-    });
+    try {
+      const { connectCode } = props;
+  
+      // 이미 같은 connectCode를 가진 유저가 2명일 경우 예외 처리
+      const isDuplicateConnectCode = await this.checkDuplicateConnectCode(connectCode);
+      if (isDuplicateConnectCode) {
+        throw { status: 404, message: "이미 같은 커플 코드를 가진 유저가 2명이 존재합니다." };
+      }
+  
+      const newUser = new User({
+        nickname: props.nickname,
+        email: props.email,
+        password: props.password,
+        phone: props.phone,
+        age: props.age,
+        bloodType: props.bloodType,
+        imageUrl: props.imageUrl,
+        starteddate: props.starteddate,
+        birthday: props.birthday,
+        connectCode: props.connectCode,
+      });
+  
+      const savedUser = await newUser.save();
+      return savedUser.id;
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw error;
+    }
+  }
+  
 
-    return newUser.id;
+
+  async updateUser(email, props) {
+    const user = await User.findOne({ email });
+  
+    if (!user) {
+      throw { status: 404, message: "유저를 찾을 수 없습니다." };
+    }
+  
+    // 비밀번호 업데이트를 원할 경우
+    if (props.password) {
+      await props.updatePassword(props.password);
+    }
+  
+    user.nickname = props.nickname;
+    user.email = props.email;
+    user.password = props.password;
+    user.phone = props.phone;
+    user.age = props.age;
+    user.bloodType = props.bloodType;
+    user.imageUrl = props.imageUrl;
+    user.starteddate = props.starteddate;
+    user.birthday = props.birthday;
+    user.connectCode = props.connectCode;
+  
+    await user.save();
   }
 
-  async updateUser(id, props) {
-    const isExist = await database.user.findUnique({
-      where: {
-        id,
-      },
-    });
 
-    if (!isExist) throw { status: 404, message: "유저를 찾을 수 없습니다." };
-    // if (props.password) {
-    //   await props.updatePassword();
-    // }
-
-    await database.user.update({
-      where: {
-        id: isExist.id,
-      },
-      data: {
-        nickname : props.nickname,
-        email : props.email,
-        password : props.password,
-        phone : props.phone,
-        age : props.age,
-        bloodType : props.bloodType,
-        imageUrl : props.imageUrl,
-        started_date : props.started_date,
-        birthday : props.birthday,
-        connectCode : props.connectCode// 커플 연결 코드
-      },
-    });
+  async deleteUser(email) {
+    const user = await User.findOne({ email });
+  
+    if (!user) {
+      throw { status: 404, message: "유저를 찾을 수 없습니다." };
+    }
+  
+    await user.deleteOne();
   }
 
-  async deleteUser(id) {
-    const isExist = await database.user.findUnique({
-      where: {
-        id,
-      },
-    });
 
-    if (!isExist) throw { status: 404, message: "유저를 찾을 수 없습니다." };
-
-    await database.user.delete({
-      where: {
-        id: isExist.id,
-      },
-    });
-  }
 }
 
 module.exports = UserService;

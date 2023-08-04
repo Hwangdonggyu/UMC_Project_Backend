@@ -10,7 +10,7 @@ class UpdateUserDTO {
   age;
   bloodType;
   imageUrl;
-  started_date;
+  starteddate;
   birthday;
   connectCode; // 커플 연결 코드
 
@@ -22,13 +22,14 @@ class UpdateUserDTO {
     this.age= user.age ?? undefined; 
     this.bloodType = user.bloodType ?? undefined;
     this.imageUrl = user.imageUrl ?? undefined;
-    this.started_date = user.started_date ?? undefined;
+    this.starteddate = user.starteddate ?? undefined;
     this.birthday = user.birthday ?? undefined;
     this.connectCode = user.connectCode ?? undefined;
   }
 
-  async updatePassword() {
-    this.password = await bcrypt.hash(password, process.env.PASSWORD_SALT);
+  async updatePassword(password) {
+    const saltRounds = parseInt(process.env.PASSWORD_SALT);
+    this.password = await bcrypt.hash(password, saltRounds);
   }
 }
 

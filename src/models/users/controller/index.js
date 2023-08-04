@@ -18,10 +18,11 @@ class UserController {
 
   init() {
     this.router.get("/", this.getUsers.bind(this));
-    this.router.get("/detail/:id", this.getUser.bind(this));
+    this.router.get("/detail/:email", this.getUser.bind(this));
     this.router.post("/", this.createUser.bind(this));
-    this.router.put("/:id", this.updateUser.bind(this));
-    this.router.delete("/:id", this.deleteUser.bind(this));
+    this.router.put("/:email", this.updateUser.bind(this));
+    this.router.delete("/:email", this.deleteUser.bind(this));
+    this.router.get("/check/:code", this.checkCouple.bind(this))
   }
 
   async getUsers(req, res, next) {
@@ -41,14 +42,44 @@ class UserController {
 
   async getUser(req, res, next) {
     try {
-      const { id } = req.params;
-      const user = await this.userService.findUserById(id);
+      const { email } = req.params;
+      const user = await this.userService.checkUserByEmail(email);
 
       res.status(200).json({ user: new UsersDTO(user) });
     } catch (err) {
       next(err);
     }
   }
+
+  // async checkCouple(req, res, next) {
+  //   try {
+  //     const { code } = req.params;
+  //     const users = await this.userService.checkCoupleConnect(code);
+      
+  //     if (!users || users.length === 0) {
+  //       return res.status(404).json({ message: "연결된 유저를 찾을 수 없습니다." });
+  //     }
+  
+  //     // 같은 코드를 가진 유저들의 정보를 반환
+  //     const usersDTO = users.map((user) => new UsersDTO(user));
+  //     res.status(200).json({ message: '커플이 연결되어 있습니다.', users: usersDTO });
+  //   } catch (err) {
+  //     next(err);
+  //   }
+  // }
+  async checkCouple(req, res, next) {
+    try {
+      const { code } = req.params;
+      const coupleUsers = await this.userService.checkCoupleConnect(code);
+  
+      const userDTOs = coupleUsers.map((user) => new UsersDTO(user));
+  
+      res.status(200).json({ message: '커플이 연결되어있습니다.', users: userDTOs });
+    } catch (err) {
+      next(err);
+    }
+  }
+  
 
   async createUser(req, res, next) {
     try {
@@ -64,10 +95,10 @@ class UserController {
 
   async updateUser(req, res, next) {
     try {
-      const { id } = req.params;
+      const { email } = req.params;
       const updateUserDto = new UpdateUserDTO(req.body);
 
-      await this.userService.updateUser(id, updateUserDto);
+      await this.userService.updateUser(email, updateUserDto);
 
       res.status(200).json({ message: '유저 정보가 변경되었습니다.' });
     } catch (err) {
@@ -77,9 +108,9 @@ class UserController {
 
   async deleteUser(req, res, next) {
     try {
-      const { id } = req.params;
+      const { email } = req.params;
 
-      await this.userService.deleteUser(id);
+      await this.userService.deleteUser(email);
 
       res.status(200).json({ message: '유저 정보가 삭제되었습니다.' });
     } catch (err) {

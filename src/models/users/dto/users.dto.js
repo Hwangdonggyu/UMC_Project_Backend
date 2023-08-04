@@ -6,7 +6,7 @@ class UsersDTO {
   age;
   bloodType;
   imageUrl;
-  started_date;
+  starteddate;
   birthday;
   connectCode; // 커플 연결 코드
 
@@ -18,7 +18,7 @@ class UsersDTO {
       this.age = user.age;
       this.bloodType = user.bloodType;
       this.imageUrl = user.imageUrl;
-      this.started_date = user.started_date;
+      this.starteddate = user.starteddate;
       this.birthday = user.birthday;
       this.connectCode = user.connectCode;
     }
