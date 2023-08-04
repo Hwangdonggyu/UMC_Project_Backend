@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const date = require("../config/moment");
 
 const diarySchema = new mongoose.Schema({
 	writeId: {
@@ -15,10 +16,14 @@ const diarySchema = new mongoose.Schema({
 		maxLength: 1000,
 		required: true,
 	},
-	imgUrl: [
+	img: [
 		{
-			type: String,
-		},
+			originalName: { type: String },
+			mimetype: { type: String },
+			fileName: { type: String },
+			dirName: { type: String },
+			size: { type: Number }
+		}
 	],
 	comment: [
 		{
@@ -26,9 +31,9 @@ const diarySchema = new mongoose.Schema({
 			ref: "Comment",
 		}
 	],
-	created_at: {
+	createdAt: {
 		type: Date,
-		default: () => Date.now() + KR_TIME_DIFF,
+		default: date()
 	},
 });
 

@@ -3,7 +3,7 @@ const Rule = require("../models/Rule");
 const Comment = require("../models/Comment");
 const User = require("../models/User");
 const { ObjectId } = require("mongodb");
-const date = require("../moment");
+const date = require("../config/moment");
 
 const diaryController = {
     

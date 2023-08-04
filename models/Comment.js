@@ -1,10 +1,16 @@
 const mongoose = require("mongoose");
+const date = require('../config/moment');
 
 const commentSchema = new mongoose.Schema({
 	diary: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Diary",
 		required: true,
+	},
+	parentComment: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "Comment",
+		required: false
 	},
 	writer: {
 		type: mongoose.Types.ObjectId,
@@ -16,15 +22,14 @@ const commentSchema = new mongoose.Schema({
 		maxLength: 200,
 		required: true,
 	},
-	createdAt: {
-		type: Date,
-		default: Date.now,
-		required: true,
+	isDeleted: {
+		type: Boolean,
+		default: false
 	},
-	replyTo: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: "Comment",
-		required: false
+	createdAt: {
+		type: String,
+		default: date(),
+		required: true,
 	}
 });
 

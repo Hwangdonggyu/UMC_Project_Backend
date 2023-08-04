@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const date = require("../moment");
+const date = require("../config/moment");
 
 const ruleSchema = new mongoose.Schema({
 	writer: {
