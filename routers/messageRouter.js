@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const messageController = require('../controllers/messageController');
 
-router.post('/', messageController.saveMessage);
+
+router.post('/', messageController.uploadFile, messageController.saveMessage);
 router.get('/:id', messageController.getMessage);
 router.delete('/:id', messageController.deleteMessage);
 

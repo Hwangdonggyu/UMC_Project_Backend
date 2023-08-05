@@ -1,17 +1,39 @@
 const mongoose = require('mongoose')
 
+const imageSchema = new mongoose.Schema({
+  url: {
+    type: String,
+    required: true,
+  },
+  name: String
+});
+
+const audioSchema = new mongoose.Schema({
+  url: {
+    type: String,
+    required: true,
+  },
+  name: String
+});
+
 const messageSchema = new mongoose.Schema({
-  /*user name for socket.io*/
   name: {
-		type: String,
-		required: true,
-		unique: true,
-	},
+    type: String,
+    required: true,
+    unique: true,
+  },
   message: {
-		type: String,
-		required: true,
-		maxLength: 200,
-	},
+    type: String,
+    required: true,
+    maxLength: 200,
+  },
+  type: {
+    type: String,
+    required: true,
+    enum: ['text', 'image', 'audio'],
+  },
+  image: imageSchema,
+  audio: audioSchema,
   date: { 
     type: Date,
     default: Date.now
