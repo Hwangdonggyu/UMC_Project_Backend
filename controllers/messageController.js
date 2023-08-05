@@ -59,11 +59,10 @@ exports.saveMessage = async (req, res, next) => {
     const newMessage = new Message(newMessageData);
     await newMessage.save();
     // io.sockets.emit('new_message', newMessage);
-    res.status(200).json(newMessage);
-    logger.info('Message saved');
+    // res.status(200).json(newMessage);
+    // logger.info('Message saved');
   } catch (e) {
-    logger.error(e);
-    next(e);
+    console.error(e);
   }
 };
 
