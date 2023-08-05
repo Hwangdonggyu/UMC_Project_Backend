@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회원가입</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container mt-4">
+    <form action="/user/register" method="POST">
+      <fieldset>
+        <legend>회원가입</legend>
+        <div class="mb-3">
+          <label for="username" class="form-label">이름</label>
+          <input type="text" id="username" class="form-control" name="username">
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">이메일</label>
+          <input type="email" id="email" class="form-control" name="email">
+        </div>
+        <div class="mb-3">
+          <label for="nickname" class="form-label">닉네임</label>
+          <input type="text" id="nickname" class="form-control" name="nickname">
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">비밀번호</label>
+          <input type="password" id="password" class="form-control" name="password">
+        </div>
+        <div class="mb-3">
+          <label for="phone" class="form-label">전화번호</label>
+          <input type="text" id="phone" class="form-control" name="phone">
+        </div>
+        
+        <div class="mb-3">
+          <label for="age" class="form-label">나이</label>
+          <input type="number" id="age" class="form-control" name="age">
+        </div>
+        
+        <div class="mb-3">
+          <label for="bloodType" class="form-label">혈액형</label>
+          <select id="bloodType" class="form-select" name="bloodType">
+            <option value="A">A형</option>
+            <option value="B">B형</option>
+            <option value="O">O형</option>
+            <option value="AB">AB형</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="imageUrl" class="form-label">프로필 사진</label>
+          <input type="file" id="imageUrl" class="form-control" name="imageUrl">
+        </div>
+        <!--
+        <div class="mb-3">
+          <label for="birthday" class="form-label">연애시작</label>
+          <input type="date" id="birthday" class="form-control" name="birthday">
+        </div>
+        -->
+        <div class="mb-3">
+          <label for="birthday" class="form-label">생년월일</label>
+          <input type="date" id="birthday" class="form-control" name="birthday">
+        </div>
+        <button id="register" type="submit" class="btn btn-outline-dark">회원가입</button>
+        <a href="/user/login" class="btn btn-outline-primary">뒤로</a>
+      </fieldset>
+    </form>
+  </div>
+</body>
+</html>
