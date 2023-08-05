@@ -18,7 +18,7 @@ diaryRouter.route('/board')
     .post(uploadMiddleware, diaryController.postDiary);
 diaryRouter.route('/board/:diaryId')
     .get(diaryController.getDiaryById)
-    .put(diaryController.patchDiary)
+    .patch(uploadMiddleware, diaryController.patchDiary)
     .delete(diaryController.deleteDiary);
 
 //comment

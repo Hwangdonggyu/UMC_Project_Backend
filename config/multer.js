@@ -16,6 +16,6 @@ const upload = multer({
     }),
     limits: {fileSize: 1024 * 1024},
 });
-const uploadMiddleware = upload.array('img', 5);    //req.files
+const uploadMiddleware = upload.array('img', 5); 
 
 module.exports = uploadMiddleware;
