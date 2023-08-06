@@ -23,7 +23,9 @@ app.use(
 		secret: process.env.COOKIE_SECRET,
 		resave: false,
 		saveUninitialized: true,
-		cookie: { maxAge: null }, // 24 hours 쿠키 유지시간
+		cookie: {
+			maxAge: 24 * 60 * 60 * 1000,
+		}, // 24 hours 쿠키 유지시간
 		MongoStore: MongoStore.create({
 			mongoUrl: process.env.DB_URL,
 		}),

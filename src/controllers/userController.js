@@ -3,34 +3,36 @@ const User = require("../models/User");
 
 // 보낸 편지함 내역 보기
 exports.getSentLetters = async (req, res) => {
+	// 로그인 된 회원의 _id 가져옴
 	const {
 		session: {
 			user: { _id },
 		},
 	} = req;
 
+	// 그 유저의 보낸 편지함 populate
 	const user = await User.findById(_id).populate("sentLetters");
 
-	return res.status(200).json(user.sentLetters).sort({ createdAt: -1 }); // 최신순으로 정렬.
+	return res.status(200).json(user.sentLetters); // 최신순으로 정렬.
 };
 
 // 받은 편지함 내역 보기
 exports.getReceivedLetters = async (req, res) => {
+	// 로그인 된 회원의 _id 가져옴
 	const {
 		session: {
 			user: { _id },
 		},
 	} = req;
 
+	// 그 유저의 받은 편지함 populate
 	const user = await User.findById(_id).populate("receivedLetters");
 
-	return res.status(200).json(user.receivedLetters).sort({ createdAt: -1 }); // 최신순으로 정렬.
+	return res.status(200).json(user.receivedLetters); // 최신순으로 정렬.
 };
 
 // 편지 보내기 화면 보기.
 exports.getSendLetter = async (req, res) => {
-	req.session.loggedIn = true;
-
 	return res.render("sendLetter.pug");
 };
 
@@ -38,9 +40,10 @@ exports.getSendLetter = async (req, res) => {
 exports.postSendLetter = async (req, res) => {
 	const {
 		session: {
-			// user: { _id, partnerId },
-			loggedIn,
+			user: { _id, partnerId },
 		},
+
+		// 편지 내용 가져오기.
 		body: {
 			reasonForReconciliation,
 			reasonForOccurrence,
@@ -52,6 +55,7 @@ exports.postSendLetter = async (req, res) => {
 	} = req;
 
 	try {
+		// 편지 객체 생성.
 		const newLetter = await Letter.create({
 			reasonForReconciliation,
 			reasonForOccurrence,
@@ -65,9 +69,11 @@ exports.postSendLetter = async (req, res) => {
 
 		const user = await User.findById(_id);
 		user.sentLetters.push(newLetter._id);
+		user.save();
 
-		const partner = await User.findById(_id);
+		const partner = await User.findById(partnerId);
 		partner.receivedLetters.push(newLetter._id);
+		partner.save();
 
 		return res.sendStatus(200);
 	} catch (err) {
@@ -84,5 +90,5 @@ exports.getLetter = async (req, res) => {
 	const letter = await Letter.findById(letterId);
 	if (!letter) return res.sendStatus(404); // 편지 없음.
 
-	return res.status(200).json(letter); //
+	return res.status(200).json(letter);
 };
