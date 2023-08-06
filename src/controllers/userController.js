@@ -65,7 +65,7 @@ exports.settingPage = async (req, res) => {
 	return res.status(200).render('setting.ejs', { user: req.session.user });
 }
 
-// 로그인, 회원가입 기능구현
+// 로그인, 로그아웃, 회원가입 기능구현
 exports.userLogin = async (req, res) => {
 	const {
 		email,
@@ -115,6 +115,7 @@ exports.userRegister = async (req, res) => {
 		phone,
 		age,
 		bloodType,
+	//	imageUrl,
 		startedDate,
 		birthday
 	} = req.body;
@@ -125,12 +126,12 @@ exports.userRegister = async (req, res) => {
 		  return res.status(400).json({ error: "이미 사용중인 아이디입니다." });
 		}
 
-		// 비밀번호와 비밀번호 확인의 일치 여부 확인
+		// 비밀번호와 비밀번호 확인의 일치 여부
 		if (password !== confirmPassword) {
 			return res.status(400).json({ error: "비밀번호가 일치하지 않습니다." });
 		}
 	
-		// bcrypt를 이용해 비밀번호 암호화
+		// 비밀번호 암호화
 		const hashedPassword = await bcrypt.hash(password, 10);
 
 		// uuid 생성 (초대코드 10자리)
@@ -157,7 +158,7 @@ exports.userRegister = async (req, res) => {
 		console.log({ message: "성공적으로 가입되셨습니다." })
 
 		// 회원가입이 진행되고 다시 로그인창으로
-		res.redirect('/login');
+		res.status(200).redirect('/login');
 
 	  } catch (error) {
 		console.error("Error in userRegister.", error);
@@ -166,81 +167,48 @@ exports.userRegister = async (req, res) => {
 }
 exports.sendingMail = async (req, res) => {
 	const { email } = req.body;
-    
-    // 이메일 주소를 통해 사용자 정보 찾기
     const user = await User.findOne({ email });
     
     if (!user) {
         return res.status(400).json({ error: "등록된 이메일 주소가 없습니다." });
     }
-	try{
-		// 기존의 재설정 토큰 삭제 (이전 토큰을 지우고 새로 발행)
-		const existingToken = await ResetToken.findOne({ userId: user._id });
-		if (existingToken) {
-			await ResetToken.findOneAndDelete({ userId: user._id });
-		}
+	try {
+        // UUID의 첫 8자리를 임시 비밀번호로 사용
+		const newUuid = uuid.v4();
+        const tempPassword = newUuid.substr(0, 8);
 
-		// 비밀번호 재설정 토큰 생성 및 저장
-		const resetToken = crypto.randomBytes(20).toString("hex");
-		const resetTokenExpiration = Date.now() + 3600000; // 유효시간은 1시간
+        // 임시 비밀번호를 암호화하여 저장
+        const hashedPassword = await bcrypt.hash(tempPassword, 10);
+        user.password = hashedPassword;
+        await user.save();
 
-		const newResetToken = new ResetToken({
-			userId: user._id,
-			token: resetToken,
-			expiration: resetTokenExpiration
-		});
-		await newResetToken.save();
-		/*
-	    // 비밀번호 재설정 링크 전송
-		const transporter = nodemailer.createTransport({
-			service: "Gmail",
-			auth: {
-				user: "sjkl6206s@gmail.com",
-				pass: "audgnl3701!",
-			},
-		});
-		
-		await transporter.sendMail({
-			to: email,
-			subject: "안녕하세요, 러브키퍼입니다. :)",
-			html: `
-				<p>비밀번호를 재설정하려면 아래 링크를 클릭하세요:</p>
-				<a href="http://localhost:4000/user/reset-password/${resetToken}">비밀번호 재설정</a>
-			`,
-		});
+        // 메일 전송 설정
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            },
+        });
 
-		return res.status(200).json({ message: "이메일로 비밀번호 재설정 링크를 보냈습니다." });
-		*/
-		const transporter = nodemailer.createTransport({
-			service: 'gmail',
-			host: 'smtp.gmail.com',
-			port: 587,
-			secure: false,
-			auth: {
-			  user: process.env.EMAIL_USER,
-			  pass: process.env.EMAIL_PASS
-			},
-		});
-		
-		// send mail with defined transport object
-		const info = await transporter.sendMail({
-			from: `"WDMA Team" <${process.env.EMAIL_USER}>`,
-			to: email,
-			subject: 'WDMA Auth Number',
-			text: generatedAuthNumber,
-			html: `<b>${generatedAuthNumber}</b>`,
-		});
-		
-		console.log('Message sent: %s', info.messageId);
-		// Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-		
-		res.status(200).json({
-			status: 'Success',
-			code: 200,
-			message: 'Sent Auth Email',
-		});
-	} catch (error) {
-        console.error("Error in forgetPassword: ", error);
+        // 임시 비밀번호를 이메일로 전송
+        await transporter.sendMail({
+            from: `"Love Keeper Team" <${process.env.EMAIL_USER}>`,
+            to: email,
+            subject: '안녕하세요. Love Keeper입니다.',
+            text: `임시 비밀번호: ${tempPassword}`,
+            html: `<p>임시 비밀번호: <strong>${tempPassword}</strong></p>`,
+        });
+
+        console.log({ message: "임시 비밀번호를 이메일로 보냈습니다." });
+
+		res.status(200).redirect('/login');
+
+    } catch (error) {
+        console.error("Error in sendingMail.", error);
         return res.status(500).json({ error: "Server error" });
     }
 

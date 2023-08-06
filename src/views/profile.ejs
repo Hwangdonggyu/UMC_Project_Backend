@@ -20,7 +20,7 @@
             </div>
             <legend>계정</legend>
             <a href="/profile/edit" class="btn btn-outline-primary">계정정보 변경</a>
-            <a href="/profile/pwEdit" class="btn btn-outline-primary">비밀번호 변경</a>
+            <a href="/profile/pwedit" class="btn btn-outline-primary">비밀번호 변경</a>
             <button id="deleteBtn" class="btn btn-outline-danger">회원 탈퇴</button>
         </fieldset>
     </div>
@@ -29,13 +29,13 @@
             $("#deleteBtn").click(function () {
                 // 경고 메시지를 표시하고 확인 시 서버에 회원 탈퇴 요청을 보냄
                 if (confirm("정말로 회원을 탈퇴하시겠습니까?")) {
-                    $.post("/profile/delete", function (data) {
+                    $.post("/delete", function (data) {
                         if (data.success) {
                             // 회원 탈퇴 성공 시 로그아웃
                             $.post("/logout", function (logoutData) {
                                 if (logoutData.success) {
-                                    // 로그아웃 성공 시 메인 페이지로 이동
-                                    window.location.href = "/user/main";
+                                    // 로그아웃 성공 시 로그인 페이지로 이동
+                                    window.location.href = "/login";
                                 } else {
                                     console.log("로그아웃 실패");
                                 }
