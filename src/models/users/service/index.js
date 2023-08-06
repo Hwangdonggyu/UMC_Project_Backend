@@ -34,7 +34,6 @@ class UserService {
   }
   
 
-
   async findUsers({ skip, take }) {
     const users = await User.find({}); // find 메서드에 조건을 지정하지 않음
   
@@ -121,6 +120,31 @@ class UserService {
   
     await user.deleteOne();
   }
+
+  async deleteCouple(connectCode) {
+    try {
+      // 커플 정보를 가져옵니다.
+      const couple = await User.find({ connectCode: connectCode });
+      if (!couple || couple.length < 2) {
+        throw { status: 404, message: "커플을 찾을 수 없거나 커플의 구성원이 2명 미만입니다." };
+      }
+  
+      // 커플의 첫 번째 구성원(user1)의 `connectCode`를 `null`로 업데이트합니다.
+      await User.findByIdAndUpdate(couple[0]._id, { $set: { connectCode: null } });
+  
+      // 커플의 두 번째 구성원(user2)의 `connectCode`를 `null`로 업데이트합니다.
+      await User.findByIdAndUpdate(couple[1]._id, { $set: { connectCode: null } });
+  
+    } catch (err) {
+      throw err;
+    }
+  }
+  
+  
+  
+  
+  
+  
 
 
 }
