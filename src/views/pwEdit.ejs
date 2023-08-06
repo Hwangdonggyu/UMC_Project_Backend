@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>비밀번호 변경</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+      <form action="/profile/pwEdit" method="POST">
+        <fieldset>
+          <legend>비밀번호 변경</legend>
+          <div class="mb-3">
+            <label for="password" class="form-label">비밀번호</label>
+            <input type="password" id="password" class="form-control" name="password" oninput="checkPasswordMatch()">
+          </div>
+          <div class="mb-3">
+            <label for="confirmPassword" class="form-label">비밀번호 확인</label>
+            <input type="password" id="confirmPassword" class="form-control" name="confirmPassword" oninput="checkPasswordMatch()">
+            <p id="passwordMatchText" style="color: red;"></p>
+          </div>
+          <button id="register" type="submit" class="btn btn-outline-dark">변경</button>
+          <a href="/login" class="btn btn-outline-primary">뒤로</a>
+        </fieldset>
+      </form>
+    </div>
+  
+    <script>
+      function checkPasswordMatch() {
+          const password = document.getElementById("password").value;
+          const confirmPassword = document.getElementById("confirmPassword").value;
+          const passwordMatchText = document.getElementById("passwordMatchText");
+  
+          if (password === confirmPassword) {
+              passwordMatchText.textContent = "비밀번호가 일치합니다.";
+              passwordMatchText.style.color = "green";
+          } else {
+              passwordMatchText.textContent = "비밀번호가 일치하지 않습니다.";
+              passwordMatchText.style.color = "red";
+          }
+      }
+  </script>
+  </body>
+  </html>

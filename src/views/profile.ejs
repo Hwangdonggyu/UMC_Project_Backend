@@ -3,46 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>회원가입</title>
+  <title>계정</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-  <div class="container mt-4">
-    <form action="/user/register" method="POST">
-      <fieldset>
-        <legend>프로필</legend>
-        <div class="mb-3">
-          <label for="username" class="form-label">이름</label>
-          <input type="text" id="username" class="form-control" name="username">
-        </div>
-        <div class="mb-3">
-          <label for="email" class="form-label">이메일</label>
-          <input type="email" id="email" class="form-control" name="email">
-        </div>
-        <div class="mb-3">
-          <label for="nickname" class="form-label">닉네임</label>
-          <input type="text" id="nickname" class="form-control" name="nickname">
-        </div>
-        <div class="mb-3">
-          <label for="password" class="form-label">비밀번호</label>
-          <input type="password" id="password" class="form-control" name="password">
-        </div>
-        <div class="mb-3">
-          <label for="phone" class="form-label">전화번호</label>
-          <input type="text" id="phone" class="form-control" name="phone">
-        </div>
-        <div class="mb-3">
-          <label for="startedDate" class="form-label">연애시작</label>
-          <input type="date" id="startedDate" class="form-control" name="startedDate">
-        </div>
-        <div class="mb-3">
-          <label for="birthday" class="form-label">생년월일</label>
-          <input type="date" id="birthday" class="form-control" name="birthday">
-        </div>
-        <button id="register" type="submit" class="btn btn-outline-dark">회원가입</button>
-        <a href="/user/login" class="btn btn-outline-primary">뒤로</a>
-      </fieldset>
-    </form>
-  </div>
+    <div class="container mt-4">
+        <fieldset>
+            <div>
+                <h5>프로필 정보</h5>
+                <p>이름: <%= user.username %></p>
+                <p>닉네임: <%= user.nickname %></p>
+                <p>이메일: <%= user.email %></p>
+                <p>생일: <%= new Date(user.birthday).toISOString().slice(0, 10) %></p>
+                <p>혈액형: <%= user.bloodType %>형</p>
+                <p>프로필 사진: <img src="<%= user.imageUrl %>" alt="프로필 사진" width="100"></p>
+            </div>
+            <legend>계정</legend>
+            <a href="/profile/edit" class="btn btn-outline-primary">계정정보 변경</a>
+            <a href="/profile/pwEdit" class="btn btn-outline-primary">비밀번호 변경</a>
+            <button id="deleteBtn" class="btn btn-outline-danger">회원 탈퇴</button>
+        </fieldset>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $("#deleteBtn").click(function () {
+                // 경고 메시지를 표시하고 확인 시 서버에 회원 탈퇴 요청을 보냄
+                if (confirm("정말로 회원을 탈퇴하시겠습니까?")) {
+                    $.post("/profile/delete", function (data) {
+                        if (data.success) {
+                            // 회원 탈퇴 성공 시 로그아웃
+                            $.post("/logout", function (logoutData) {
+                                if (logoutData.success) {
+                                    // 로그아웃 성공 시 메인 페이지로 이동
+                                    window.location.href = "/user/main";
+                                } else {
+                                    console.log("로그아웃 실패");
+                                }
+                            });
+                        } else {
+                            // 회원 탈퇴 실패 시 처리
+                            console.log("회원 탈퇴 실패");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>

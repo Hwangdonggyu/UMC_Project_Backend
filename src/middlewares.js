@@ -3,7 +3,7 @@ exports.protectorMiddleware = (req, res, next) => {
 	if (req.session.loggedIn) {
 		return next();
 	} else {
-		return res.redirect("/user/login");
+		return res.redirect("/login");
 	}
 };
 
