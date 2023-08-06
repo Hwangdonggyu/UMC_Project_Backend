@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { loginPage, registerPage, resetPwPage, mainPage, forgetPwPage, settingPage, userLogin, userLogout, userRegister, sendingMail } = require("../controllers/userController");
+const { loginPage, registerPage, mainPage, forgetPwPage, settingPage, userLogin, userLogout, userRegister, sendingMail } = require("../controllers/userController");
 const { protectorMiddleware, publicOnlyMiddleware } = require("../middlewares");
 
 const userRouter = express.Router();
@@ -13,9 +13,6 @@ userRouter
 	.route('/register')
 	.get(publicOnlyMiddleware, registerPage);
 userRouter
-	.route('/reset-password')
-	.get(publicOnlyMiddleware, resetPwPage);
-userRouter
 	.route('/main')
 	.get(protectorMiddleware, mainPage);
 userRouter
@@ -26,7 +23,7 @@ userRouter
 	.get(protectorMiddleware, settingPage);
 
 
-// 로그인, 회원가입 기능구현
+// 로그인, 로그아웃, 회원가입, 메일전송
 userRouter
 	.route('/login')
 	.post(userLogin);

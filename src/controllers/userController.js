@@ -2,11 +2,10 @@ const User = require("../models/User");
 const ResetToken = require("../models/ResetToken");
 const uuid = require("uuid");
 const bcrypt = require("bcrypt");
-const crypto = require("crypto");
 const nodemailer = require('nodemailer');
 const multer = require('multer');
 
-// 이미지 업로드를 위한 설정
+// 이미지 업로드를 위한 설정 (미완성)
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
 		cb(null, "public/uploads"); // 파일 저장 경로
@@ -38,7 +37,7 @@ const upload = multer({
     }
 });
 
-// 로그인, 회원가입 페이지 (Demo)
+// 유저 페이지 (Demo)
 exports.loginPage = async (req, res) => {
 	return res.status(200).render('login.ejs');
 }
@@ -46,26 +45,16 @@ exports.registerPage = async (req, res) => {
 	return res.status(200).render('register.ejs');
 }
 exports.mainPage = async (req, res) => {
-	/*
-	if (!req.session.loggedIn || !req.session.user) {
-        // 로그인되지 않았거나 세션이 없을 경우 로그인 페이지로 리다이렉트
-        return res.redirect('/user/login');
-    }
-	*/
-    // 현재 로그인한 사용자 정보 활용하여 메인 페이지 렌더링
     return res.status(200).render('main.ejs', { user: req.session.user });
 }
 exports.forgetPwPage = async (req, res) => {
 	return res.status(200).render('forget-password.ejs');
 }
-exports.resetPwPage = async (req, res) => {
-	return res.status(200).render('reset-password.ejs');
-}
 exports.settingPage = async (req, res) => {
 	return res.status(200).render('setting.ejs', { user: req.session.user });
 }
 
-// 로그인, 로그아웃, 회원가입 기능구현
+// 로그인, 로그아웃, 회원가입, 메일전송
 exports.userLogin = async (req, res) => {
 	const {
 		email,
@@ -83,8 +72,7 @@ exports.userLogin = async (req, res) => {
 
 		console.log({ message: "Login Success" });
 
-		// 로그인 후에 메인창으로
-		res.redirect('/main');
+		res.status(200).redirect('/main');
 	
 	  } catch (error) {
 		console.error("Error in userLogin.", error);
@@ -99,7 +87,6 @@ exports.userLogout = (req, res) => {
             return res.status(500).json({ success: false });
         }
 
-        // 세션 삭제 후 응답
         console.log({ message: "Logout Success" });
         return res.status(200).json({ success: true });
     });
@@ -157,7 +144,6 @@ exports.userRegister = async (req, res) => {
 	
 		console.log({ message: "성공적으로 가입되셨습니다." })
 
-		// 회원가입이 진행되고 다시 로그인창으로
 		res.status(200).redirect('/login');
 
 	  } catch (error) {
@@ -173,6 +159,7 @@ exports.sendingMail = async (req, res) => {
         return res.status(400).json({ error: "등록된 이메일 주소가 없습니다." });
     }
 	try {
+
         // UUID의 첫 8자리를 임시 비밀번호로 사용
 		const newUuid = uuid.v4();
         const tempPassword = newUuid.substr(0, 8);
