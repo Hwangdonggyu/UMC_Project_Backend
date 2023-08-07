@@ -11,60 +11,71 @@ const diaryController = {
      * [GET] /diary/board
      */
     getDiaries: async(req, res) => {
+        try{
+            const {_id} = req.session;  // 로그인 된 회원의 _id
+            const getValue = 'writer content img.filename comment createdAt'
+            let diaries = await Diary.find({writer: _id}).populate('writer', 'nickname').select(getValue);
 
-        const userId = new ObjectId(req.body.userId);
-        const view = 'writer content img.filename comment createdAt'
-        let diaries = await Diary.find({writer: userId}).populate('writer', 'nickname').select(view);
+            const user = await User.findById(_id, 'connectCode');
+            const connectCode = user.connectCode;
+            
+            //파트너가 작성한 diary들 반환
+            const partner = await User.findOne({connectCode : connectCode, _id : {$ne : _id}});
 
-        const partner = await User.findById(userId, 'partnerId');
-        
-        //파트너가 작성한 diary들 반환
-        
-        if (partner){
-            const partnerId = new ObjectId(partner.partnerId);
-            const diariesByPartner = await Diary.find({writer: partnerId});
-            diaries = diaries.concat(diariesByPartner);
+            if (partner){
+                const diariesByPartner = await Diary.find({writer: partner._id}).populate('writer', 'nickname').select(getValue);
+                console.log(diariesByPartner);
+                diaries = diaries.concat(diariesByPartner);
+            }
+            
+            //result 형식
+            const resultArr = [];
+            const url = "http://localhost:4000/img/uploads/"
+            for (const val of diaries) {
+                resultArr.push({
+                    _id: val._id,
+                    writer: val.writer.nickname,
+                    content: val.content,
+                    img: val.img.map((item) => { return url + item.filename }),
+                    comment: val.comment.length,
+                    createdAt: val.createdAt
+                })
+            }
+            //생성된 날짜순으로 정렬(최신순)
+            const result = resultArr.sort((a,b) => {
+                return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+            }).reverse();
+
+            return res.status(200).send({result});
+        } catch (err){
+            console.log(err);
+            return res.status(500).end();
         }
-
-        //result 형식
-        const resultArr = [];
-        const url = "http://localhost:4000/img/uploads/"
-        for (const val of diaries) {
-            resultArr.push({
-                _id: val._id,
-                writer: val.writer.nickname,
-                content: val.content,
-                img: val.img.map((item) => { return url + item.filename }),
-                comment: val.comment.length,
-                createdAt: val.createdAt
-            })
-        }
-        //생성된 날짜순으로 정렬(최신순)
-        const result = resultArr.sort((a,b) => {
-            return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-        }).reverse();
-
-        return res.status(200).send({result});
-        
     },
     /**
      * [POST] /diary/board
      */
     postDiary: async(req, res) => {
-        const userId = new ObjectId(req.body.userId);
-        const content = req.body.content;
-        const [images] = req.files;
-        console.log(req.files);
-        const diary = new Diary({
-            writer: userId,
-            content: content,
-            img: images,
-        })
+        try{
+            const {_id} = req.session;  // 로그인 된 회원의 _id
+            const content = req.body.content;
+            const images = req.files;
+
+            const diary = new Diary({
+                writer: _id,
+                content: content,
+                img: images,
+            })
+            
+            const result = await diary.save();
+            id = result._id;
+            console.log(result);
+            return res.status(200).send({result: {"_id" : id}});
+        } catch(err){
+            console.log(err);
+            return res.status(500).end();
+        }
         
-        const result = await diary.save();
-        id = result._id;
-        console.log(result);
-        return res.status(200).send({result: {"_id" : id}});
     },
     /**
      * [GET] /diary/board/:diaryId
@@ -124,13 +135,12 @@ const diaryController = {
      */
     patchDiary: async(req, res) => {
         try{
-            const diaryId = new ObjectId(req.params.diaryId);
+            const {diaryId} = req.params
             const content = req.body.content;   // 수정된 내용
-            const [addImgs] = req.files;   // 추가한 이미지 - file 정보
+            const addImgs = req.files;   // 추가한 이미지 - file 정보
             const deleteImgs = req.body.deleteImg; // 삭제한 이미지 - url 정보
             let deleteImgArr = [];
             let deleteImgName;
-
             const diary = await Diary.findById(diaryId, 'img content');
 
             //삭제한 이미지가 존재하면 Diary에서 해당 이미지를 찾아서 삭제
@@ -152,14 +162,19 @@ const diaryController = {
                 }
             }
             //추가한 이미지가 존재하면 Diary에 해당 이미지 추가
-            if(addImgs) diary.img.push(addImgs);
+            if(addImgs) {
+                for (const val of addImgs){
+                    diary.img.push(val);
+                }
+            }
             //수정된 내용이 존재하면 내용 수정
             if (content) diary.content = content; 
     
             const result = await diary.save();
+
             const id = result._id;
 
-            return res.status(200).send({result: {"_id" : id}});
+            return res.status(200).end();
 
         } catch(err) {
             console.log(err);
@@ -171,7 +186,7 @@ const diaryController = {
      */
     deleteDiary: async(req, res) => {
         try{
-            const diaryId = new ObjectId(req.params.diaryId);
+            const {diaryId} = req.params;
             const diary = await Diary.findById(diaryId, 'comment');
             
             //comment 삭제
@@ -192,8 +207,9 @@ const diaryController = {
      * [POST] /diary/board/:diaryId/comments
      */
     postComment: async(req, res) => {
-        const diaryId = new ObjectId(req.params.diaryId);
-        const userId = new ObjectId(req.body.userId);
+    
+        const {_id} = req.session;  // 로그인 된 회원의 _id
+        const {diaryId} = req.params;
         let {parentComment, content} = req.body;
 
         if (parentComment){
@@ -203,12 +219,11 @@ const diaryController = {
         const comment = new Comment({
             diary: diaryId,
             parentComment: parentComment,
-            writer: userId,
+            writer: _id,
             content: content
         })
         
         const result = await comment.save();
-        console.log(result);
         id = result._id;
 
         //diaryId에 해당하는 Diary에 comment 추가
@@ -223,8 +238,7 @@ const diaryController = {
      */
     deleteComment: async(req, res) => {
         try{
-            const diaryId = new ObjectId(req.params.diaryId);
-            const commentId = new ObjectId(req.params.commentId);
+            const {diaryId, commentId} = req.params;
             
             const result = await Comment.findByIdAndUpdate(commentId, {
                 isDeleted: true

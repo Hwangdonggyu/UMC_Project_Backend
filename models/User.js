@@ -13,7 +13,6 @@ const UserSchema = new mongoose.Schema({
 	started_date: { type: Date, required: true },
 	birthday: { type: Date, required: true },
 	connectCode: { type: String, required: true, unique: true },
-	partnerId: { type: String, required: true, unique: true },
 	createdAt: { type: Date, default: Date.now, required: true },
 	sentLetters: [
 		{

@@ -9,42 +9,54 @@ const ruleController = {
      * [GET] /diary/rules
      */
     getRules: async (req, res) => {
-        const userId = new ObjectId(req.body.userId);
+        try{
+            const {_id} = req.session;  // 로그인 된 회원의 _id
 
-        let rules = await Rule.find({writer: userId}, {content: 1, createdAt: 1});
-        
-        const partner = await User.findById(userId, 'partnerId');
-        
-        //파트너가 작성한 규칙들 반환
-        if (partner){
-            const partnerId = new ObjectId(partner.partnerId);
-            const rulesByPartner = await Rule.find({writer: partnerId}, {content:1 , createdAt: 1});
-            rules = rules.concat(rulesByPartner);
+            let rules = await Rule.find({writer: _id}, {content: 1, createdAt: 1});
+            const user = await User.findById(_id, 'connectCode');
+            const connectCode = user.connectCode;
+            
+            //파트너가 작성한 규칙들 반환
+            const partner = await User.findOne({connectCode : connectCode, _id : {$ne : _id}});
+
+            if (partner){
+                const rulesByPartner = await Rule.find({writer: partner._id}, {content:1 , createdAt: 1});
+                rules = rules.concat(rulesByPartner);
+            }
+
+            //생성된 날짜순으로 정렬(최신순)
+            const result = rules.sort((a,b) => {
+                return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+            }).reverse();
+
+            return res.status(200).send({result});
+        } catch(err){
+            console.log(err);
+            res.status(500).end();
         }
-
-        //생성된 날짜순으로 정렬(최신순)
-        const result = rules.sort((a,b) => {
-            return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-        }).reverse();
-
-        return res.status(200).send({result});
+        
     },
 
     /**
      * [POST] /diary/rules
      */
     postRule: async (req, res) => {
-        const userId = new ObjectId(req.body.userId);
-        const content = req.body.content;
-
-        const rule = new Rule({
-            writer: userId,
-            content: content
-        })
-        
-        const result = await rule.save();
-        id = result._id;
-        return res.status(200).send({result: {"_id" : id}});
+        try{
+            const {_id} = req.session;  // 로그인 된 회원의 _id
+            const content = req.body.content;
+    
+            const rule = new Rule({
+                writer: _id,
+                content: content
+            })
+            
+            const result = await rule.save();
+            id = result._id;
+            return res.status(200).send({result: {"_id" : id}});
+        }catch(err){
+            console.log(err);
+            res.status(500).end();
+        } 
     },
 
     /**
