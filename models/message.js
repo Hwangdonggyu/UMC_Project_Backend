@@ -1,5 +1,11 @@
 const mongoose = require('mongoose')
 
+const textSchema = new mongoose.Schema({
+  type: String,
+  required: true,
+  maxLength: 200,
+});
+
 const imageSchema = new mongoose.Schema({
   url: {
     type: String,
@@ -22,16 +28,12 @@ const messageSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  message: {
-    type: String,
-    required: true,
-    maxLength: 200,
-  },
   type: {
     type: String,
     required: true,
     enum: ['text', 'image', 'audio'],
   },
+  text: textSchema,
   image: imageSchema,
   audio: audioSchema,
   date: { 
