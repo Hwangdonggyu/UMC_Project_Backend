@@ -73,7 +73,7 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke');
 });
 
-/* 8080 포트로 listen */
-server.listen(8080, function() {
+/* 4500 포트로 listen */
+server.listen(4500, function() {
   console.log('서버 실행 중..')
 })

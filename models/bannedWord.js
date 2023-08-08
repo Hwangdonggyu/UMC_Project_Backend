@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 
 const bannedWordSchema = new mongoose.Schema({
-	userID: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: "User",
-		required: true,
-	},
 	bannedWordTxt: {
 		type: String,
 		required: true,

@@ -4,3 +4,16 @@
 {"level":"error"}
 {"level":"error"}
 {"level":"error"}
+{"level":"error"}
+{"level":"error"}
+{"level":"error"}
+{"level":"error"}
+{"level":"error"}
+{"level":"error"}
+{"level":"error"}
+{"level":"error"}
+{"kind":"ObjectId","message":"Cast to ObjectId failed for value \":id\" (type string) at path \"_id\" for model \"BannedWord\"","name":"CastError","path":"_id","reason":{},"stringValue":"\":id\"","value":":id","valueType":"string"}
+{"level":"error"}
+{"level":"error"}
+{"level":"error"}
+{"level":"error"}

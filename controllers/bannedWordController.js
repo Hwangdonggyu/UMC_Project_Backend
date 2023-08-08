@@ -12,29 +12,23 @@ const logger = winston.createLogger({
   ],
 });
 
-exports.saveBannedWord = [
-  check('userID').not().isEmpty(),
-  check('bannedWordTxt').isString().not().isEmpty(),
-  check('reason').isString().not().isEmpty(),
-  check('substitution').isString().not().isEmpty(),
-  async (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+exports.saveBannedWord = async (req, res, next) => {
+  try {
+      const bannedWordTxt = req.body.bannedWordTxt;
+      const reason = req.body.reason;
+      const substitution = req.body.substitution;
 
-    try {
-      const { userID, bannedWordTxt, reason, substitution } = req.body;
-      const bannedWord = new BannedWord({ userID, bannedWordTxt, reason, substitution });
+      const bannedWord = new BannedWord({ bannedWordTxt, reason, substitution });
       await bannedWord.save();
       logger.info('BannedWord saved');
       res.status(201).json(bannedWord);
-    } catch (e) {
+  } catch (e) {
       logger.error(e);
       next(e);
-    }
-  },
-];
+  }
+};
+
+
 
 exports.getBannedWord = async (req, res, next) => {
   try {

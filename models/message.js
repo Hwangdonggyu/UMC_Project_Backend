@@ -1,9 +1,12 @@
 const mongoose = require('mongoose')
 
 const textSchema = new mongoose.Schema({
+  text: {
   type: String,
   required: true,
   maxLength: 200,
+},
+name: String
 });
 
 const imageSchema = new mongoose.Schema({
