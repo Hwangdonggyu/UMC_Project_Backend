@@ -6,7 +6,7 @@ const {
 	getReceivedLetters,
 	getLetter,
 	getSendLetter,
-} = require("../controllers/userController");
+} = require("../controllers/letterController");
 const { protectorMiddleware, publicOnlyMiddleware } = require("../middlewares");
 
 const userRouter = express.Router();
@@ -30,8 +30,9 @@ userRouter
 	.get(getSendLetter)
 	.post(postSendLetter);
 
+// 편지 보기
 userRouter
-	.route("/letter/:letterId(([a-f0-9]{24}))")
+	.route("/:id(([a-f0-9]{24}))")
 	.all(protectorMiddleware)
 	.get(getLetter);
 

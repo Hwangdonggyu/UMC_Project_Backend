@@ -54,6 +54,11 @@ exports.postSendLetter = async (req, res) => {
 		}, // 클라이언트에서 보내주는 letter의 구조를 안 후에 작성하도록.
 	} = req;
 
+	// 파트너가 없으면 에러.
+	if (!partnerId) {
+		return res.status(400).json({ message: "파트너가 없습니다." });
+	}
+
 	try {
 		// 편지 객체 생성.
 		const newLetter = await Letter.create({
@@ -75,20 +80,27 @@ exports.postSendLetter = async (req, res) => {
 		partner.receivedLetters.push(newLetter._id);
 		partner.save();
 
-		return res.sendStatus(200);
+		return res
+			.status(200)
+			.json({ message: "편지가 성공적으로 전송되었습니다." });
 	} catch (err) {
-		return res.sendStatus(400);
+		return res.status(400).json({ message: err });
 	}
 };
 
 // 보낸 편지 보기.
 exports.getLetter = async (req, res) => {
 	const {
-		params: { letterId },
+		params: { id },
 	} = req;
 
-	const letter = await Letter.findById(letterId);
-	if (!letter) return res.sendStatus(404); // 편지 없음.
+	const letter = await Letter.findById(id);
+	// 편지 없음
+	if (!letter) return res.status(400).json({ message: "편지가 없습니다." });
+
+	// 편지가 있으면 읽은 횟수 +1
+	letter.readedCount += 1;
+	letter.save();
 
 	return res.status(200).json(letter);
 };

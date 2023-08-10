@@ -32,6 +32,6 @@ app.use(
 	})
 );
 
-app.use("/users", userRouter);
+app.use("/letters", userRouter);
 
 module.exports = app;
