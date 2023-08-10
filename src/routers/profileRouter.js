@@ -7,16 +7,16 @@ const profileRouter = express.Router();
 
 profileRouter
 	.route('/')
-	.get(protectorMiddleware, profilePage);
+	.all(protectorMiddleware)
+	.get(profilePage);
 profileRouter
 	.route('/pwedit')
-	.get(protectorMiddleware, pweditPage);
-
-profileRouter
-	.route('/pwedit')
-	.post(protectorMiddleware, passwordEdit)
+	.all(protectorMiddleware)
+	.get(pweditPage)
+	.put(passwordEdit);
 profileRouter
 	.route('/delete')
-	.delete(protectorMiddleware, deleteUser)
+	.all(protectorMiddleware)
+	.delete(deleteUser)
 
 module.exports = profileRouter;

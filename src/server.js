@@ -2,7 +2,8 @@ require("./db");
 const express = require("express");
 const session = require("express-session"); // express-session 미들웨어로 사용자 세션을 관리
 const MongoStore = require("connect-mongo"); // connect-mongo으로 MongoDB에 세션 데이터를 저장
-const morgan = require("morgan"); //  Express용 로깅 미들웨어인 morgan
+const morgan = require("morgan");
+//const upload = require('./uploadConfig'); // 이미지 업로드 설정 모듈 가져오기
 
 // Routers
 const userRouter = require("./routers/userRouter.js");
@@ -31,7 +32,7 @@ app.use(
 	})
 );
 
-// 세션 정보 조회
+// 세션 정보 조회 (Demo)
 app.get('/session', (req, res) => {
     console.log('Session Info:', req.session);
     res.json({ loggedIn: req.session.loggedIn, user: req.session.user });
@@ -39,5 +40,13 @@ app.get('/session', (req, res) => {
 
 app.use('/', userRouter);
 app.use('/profile', profileRouter);
-
+/*
+app.post('/upload', upload.single('profileImage'), (req, res) => {
+	if (req.fileValidationError) {
+		return res.status(400).json({ error: req.fileValidationError });
+	}
+  
+	res.status(200).json({ message: '이미지 업로드 성공' });
+});
+*/
 module.exports = app;
