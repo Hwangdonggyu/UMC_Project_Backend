@@ -3,8 +3,8 @@ const router = express.Router();
 const bannedWordController = require("../controllers/bannedWordController");
 
 router.post('/', bannedWordController.saveBannedWord);
-router.get('/:id', bannedWordController.getBannedWord);
-router.put('/:id', bannedWordController.updateBannedWord);
-router.delete('/:id', bannedWordController.deleteBannedWord);
+router.get('/:bannedWordTxt', bannedWordController.getBannedWord);
+router.put('/:bannedWordTxt', bannedWordController.updateBannedWord);
+router.delete('/:bannedWordTxt', bannedWordController.deleteBannedWord);
 
 module.exports = router;

@@ -3,6 +3,7 @@ const socket = require('socket.io')
 const http = require('http')
 const fs = require('fs')
 const app = express()
+app.use(express.json());
 const server = http.createServer(app)
 const io = socket(server)
 const mongoose = require('mongoose')

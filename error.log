@@ -17,3 +17,12 @@
 {"level":"error"}
 {"level":"error"}
 {"level":"error"}
+{"level":"error"}
+{"level":"error"}
+{"level":"error"}
+{"level":"error"}
+{"level":"error","message":"error caught: Cannot read properties of undefined (reading 'bannedWordTxt')"}
+{"level":"error","message":"error caught: Cannot read properties of undefined (reading 'bannedWordTxt')"}
+{"level":"error","message":"error caught: Cannot read properties of undefined (reading 'bannedWordTxt')"}
+{"level":"error","message":"error caught: Cannot read properties of undefined (reading 'bannedWordTxt')"}
+{"level":"error","message":"error caught: Cannot read properties of undefined (reading 'bannedWordTxt')"}

@@ -23,7 +23,10 @@ exports.saveBannedWord = async (req, res, next) => {
       logger.info('BannedWord saved');
       res.status(201).json(bannedWord);
   } catch (e) {
-      logger.error(e);
+    console.log(e.message)
+      logger.error("error caught:", {
+        message: e.message
+      });
       next(e);
   }
 };
@@ -32,50 +35,56 @@ exports.saveBannedWord = async (req, res, next) => {
 
 exports.getBannedWord = async (req, res, next) => {
   try {
-    const bannedWord = await BannedWord.findById(req.params.id).exec();
-    if (!bannedWord) {
-      return res.status(404).send('BannedWord not found');
-    }
-    logger.info('BannedWord with id ${req.params.id} retrieved');
-    res.status(200).json(bannedWord);
+      const { bannedWordTxt } = req.params;
+
+      const bannedWord = await BannedWord.findOne({ bannedWordTxt });
+      if (!bannedWord) {
+          return res.status(404).json({ error: 'BannedWord not found.' });
+      }
+
+      res.status(200).json(bannedWord);
   } catch (e) {
-    logger.error(e);
-    next(e);
+      next(e);
   }
 };
+
 
 exports.updateBannedWord = async (req, res, next) => {
   try {
-    const { bannedWordTxt, reason, substitution } = req.body;
-    const bannedWord = await BannedWord.findByIdAndUpdate(
-      req.params.id,
-      { bannedWordTxt, reason, substitution },
-      { new: true }
-    ).exec();
-    if (!bannedWord) {
-      return res.status(404).send('BannedWord not found');
-    }
-    logger.info('BannedWord with id ${req.params.id} updated');
-    res.status(200).json(bannedWord);
+      const { bannedWordTxt } = req.params;
+      const { reason, substitution } = req.body;
+
+      const bannedWord = await BannedWord.findOne({ bannedWordTxt });
+      if (!bannedWord) {
+          return res.status(404).json({ error: 'Word not found.' });
+      }
+
+      if (reason) bannedWord.reason = reason;
+      if (substitution) bannedWord.substitution = substitution;
+
+      await bannedWord.save();
+      res.status(200).json(bannedWord);
   } catch (e) {
-    logger.error(e);
-    next(e);
+      next(e);
   }
 };
 
+
 exports.deleteBannedWord = async (req, res, next) => {
   try {
-    const bannedWord = await BannedWord.findByIdAndDelete(req.params.id).exec();
-    if (!bannedWord) {
-      return res.status(404).send('BannedWord not found');
-    }
-    logger.info('BannedWord deleted');
-    res.status(200).send('BannedWord deleted');
+      const { bannedWordTxt } = req.params;
+
+      const result = await BannedWord.findOneAndDelete({ bannedWordTxt });
+      if (!result) {
+          return res.status(404).json({ error: 'BannedWord not found.' });
+      }
+
+      res.status(200).json({ message: 'BannedWord deleted successfully.' });
   } catch (e) {
-    logger.error(e);
-    next(e);
+      next(e);
   }
 };
+
 
 exports.errorHandler = (err, req, res, next) => {
   logger.error(err.stack);
