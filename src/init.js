@@ -8,7 +8,6 @@ const User = require("./models/User");
 const Letter = require("./models/Letter");
 const Rule = require("./models/Rule");
 const Chat = require("./models/Chat");
-const BannedWord = require("./models/BannedWord");
 
 const app = require("./server");
 
