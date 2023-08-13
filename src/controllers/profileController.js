@@ -1,15 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 
-// 프로필 페이지 (Demo)
-exports.profilePage = async (req, res) => {
-	return res.status(200).render('profile.ejs', { user: req.session.user });
-}
-exports.pweditPage = async (req, res) => {
-	return res.status(200).render('pwedit.ejs', { user: req.session.user });
-}
-
-// 비밀번호 변경, 회원 탈퇴
+// 비밀번호 변경
 exports.passwordEdit = async (req, res) => {
 	const { currentPassword, newPassword, confirmPassword } = req.body;
 
@@ -38,6 +30,8 @@ exports.passwordEdit = async (req, res) => {
         return res.status(500).json({ error: 'Server error', success: false });
     }
 }
+
+// 회원 탈퇴
 exports.deleteUser = async (req, res) => {
 	try {
         const user = await User.findByIdAndDelete(req.session.user._id);
