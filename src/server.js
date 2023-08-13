@@ -5,7 +5,7 @@ const MongoStore = require("connect-mongo"); // MongoDB에 세션 데이터를 �
 const morgan = require("morgan"); //  Express용 로깅 미들웨어인 morgan 가져오기.
 
 // Routers
-const userRouter = require("./routers/userRouter.js");
+const userRouter = require("./routers/letterRouter.js");
 
 const app = express();
 
@@ -32,6 +32,6 @@ app.use(
 	})
 );
 
-app.use("/letters", userRouter);
+app.use("/letters", letterRouter);
 
 module.exports = app;
