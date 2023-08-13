@@ -8,15 +8,19 @@
 </head>
 <body>
     <div class="container mt-4">
-      <form action="/profile/pwEdit" method="POST">
+      <form action="/profile/pwedit" method="POST">
         <fieldset>
           <legend>비밀번호 변경</legend>
           <div class="mb-3">
-            <label for="password" class="form-label">비밀번호</label>
-            <input type="password" id="password" class="form-control" name="password" oninput="checkPasswordMatch()">
+            <label for="currentPassword" class="form-label">기존의 비밀번호</label>
+            <input type="password" id="currentPassword" class="form-control" name="currentPassword">
           </div>
           <div class="mb-3">
-            <label for="confirmPassword" class="form-label">비밀번호 확인</label>
+            <label for="newPassword" class="form-label">새 비밀번호</label>
+            <input type="password" id="newPassword" class="form-control" name="newPassword" oninput="checkPasswordMatch()">
+          </div>
+          <div class="mb-3">
+            <label for="confirmPassword" class="form-label">새 비밀번호 확인</label>
             <input type="password" id="confirmPassword" class="form-control" name="confirmPassword" oninput="checkPasswordMatch()">
             <p id="passwordMatchText" style="color: red;"></p>
           </div>
