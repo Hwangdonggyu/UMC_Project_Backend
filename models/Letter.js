@@ -41,9 +41,9 @@ const letterSchema = new mongoose.Schema({
 		ref: "User",
 		required: true,
 	},
-	read: {
-		type: Boolean,
-		default: false,
+	readedCount: {
+		type: Number,
+		default: 0,
 		required: true,
 	},
 });
