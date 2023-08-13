@@ -57,3 +57,17 @@ module.exports = User;
 // 	partnerNickname: { type: String, dafult: null },
 // 	partnerId:   { type: String, default: null },
 // 	createdAt:   { type: Date  , default: Date.now, required: true },
+
+
+// sentLetters: [
+// 		{
+// 			type: mongoose.Schema.Types.ObjectId,
+// 			ref: "Letter",
+// 		},
+// 	],
+// 	receivedLetters: [
+// 		{
+// 			type: mongoose.Schema.Types.ObjectId,
+// 			ref: "Letter",
+// 		},
+// 	],
