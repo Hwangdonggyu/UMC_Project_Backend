@@ -1,11 +1,6 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const bannedWordSchema = new mongoose.Schema({
-	userID: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: "User",
-		required: true,
-	},
 	bannedWordTxt: {
 		type: String,
 		required: true,
@@ -23,6 +18,6 @@ const bannedWordSchema = new mongoose.Schema({
 	},
 });
 
-const BannedWord = mongoose.model("BannedWord", bannedWordSchema);
+const BannedWord = mongoose.model('BannedWord', bannedWordSchema);
 
 module.exports = BannedWord;
