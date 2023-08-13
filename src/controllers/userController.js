@@ -1,8 +1,6 @@
 const User = require("../models/User");
 const uuid = require("uuid");
 const bcrypt = require("bcrypt");
-const nodemailer = require('nodemailer');
-
 
 const { sendMail } = require('../services/emailService');
 
@@ -64,7 +62,6 @@ exports.userLogout = (req, res) => {
         return res.status(200).json({ message: "로그아웃 되었습니다.", success: true, redirect: "/login" });
     });
 };
-
 exports.userRegister = async (req, res) => {
 	const { 
 		username,
@@ -99,9 +96,9 @@ exports.userRegister = async (req, res) => {
 		const uuidString = fullUuid.substr(fullUuid.length - 10).toUpperCase();
 
 		// 파일 url
-		const imageUrl = "public/uploads/heart.png"; // 기본 이미지 URL
+		let imageUrl = "public/uploads/heart.png"; // 기본 이미지 URL
 		if (req.file) {
-			imageUrl = `uploads/${req.file.filename}`;
+			imageUrl = `public/uploads/${req.file.filename}`;
 		}
 
 		// 회원 정보를 DB에 저장
@@ -121,7 +118,7 @@ exports.userRegister = async (req, res) => {
 
 		await newUser.save();
 		
-		// 감사 메일
+		// 환영 메일
 		await sendMail(
 			email,
 			'안녕하세요. Love Keeper 팀입니다.',
@@ -131,7 +128,7 @@ exports.userRegister = async (req, res) => {
 
 		console.log({ message: "Sending success" });
 
-		console.log({ message: "Registing success" })
+		console.log({ message: "Register success" })
 
 		return res.status(200).json({ message: "회원가입에 성공하였습니다.", success: true, redirect: "/login" });
 
@@ -175,12 +172,10 @@ exports.passwordFind = async (req, res) => {
         return res.status(500).json({ error: "Server error", success: false });
     }
 };
-
 exports.connectWithPartner = async (req, res) => {
     const { connectCode } = req.body;
 
     try {
-        // 현재 로그인한 유저 정보 가져오기
         const currentUser = await User.findById(req.session.user._id);
 
         // 입력한 초대코드로 유저 찾기
@@ -208,7 +203,7 @@ exports.connectWithPartner = async (req, res) => {
     }
 };
 
-// 문의하기 (디자인 미완)
+// 문의하기
 exports.sendSupportEmail = async (req, res) => {
     if (!req.session.loggedIn) {
         return res.status(401).json({ error: "로그인이 필요합니다.", success: false });

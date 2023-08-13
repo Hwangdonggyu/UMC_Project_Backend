@@ -45,7 +45,6 @@ exports.deleteUser = async (req, res) => {
             return res.status(400).json({ error: "회원정보를 찾을 수 없습니다.", success: false });
         }
 
-        // 세션에서 사용자 정보 제거
         req.session.destroy();
 
 		console.log({ message : "Delete user" });
