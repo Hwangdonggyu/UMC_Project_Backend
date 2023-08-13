@@ -4,24 +4,7 @@ const bcrypt = require("bcrypt");
 
 const { sendMail } = require('../services/emailService');
 
-// 유저 페이지 (Demo)
-exports.loginPage = async (req, res) => {
-	return res.status(200).render('login.ejs');
-}
-exports.registerPage = async (req, res) => {
-	return res.status(200).render('register.ejs');
-}
-exports.mainPage = async (req, res) => {
-    return res.status(200).render('main.ejs', { user: req.session.user });
-}
-exports.forgetPwPage = async (req, res) => {
-	return res.status(200).render('findpassword.ejs');
-}
-exports.settingPage = async (req, res) => {
-	return res.status(200).render('setting.ejs', { user: req.session.user });
-}
-
-// 로그인, 로그아웃, 회원가입, 임시 비밀번호 전송
+// 로그인
 exports.userLogin = async (req, res) => {
 	const {
 		email,
@@ -51,6 +34,8 @@ exports.userLogin = async (req, res) => {
 		return res.status(500).json({ error: "Server error", success: false });
 	}
 }
+
+// 로그아웃
 exports.userLogout = (req, res) => {
     req.session.destroy((error) => {
         if (error) {
@@ -62,6 +47,8 @@ exports.userLogout = (req, res) => {
         return res.status(200).json({ message: "로그아웃 되었습니다.", success: true, redirect: "/login" });
     });
 };
+
+// 회원가입
 exports.userRegister = async (req, res) => {
 	const { 
 		username,
@@ -137,6 +124,8 @@ exports.userRegister = async (req, res) => {
 		return res.status(500).json({ error: "Server error", success: false });
 	  }
 }
+
+// 비밀번호 찾기
 exports.passwordFind = async (req, res) => {
 	const { email } = req.body;
     const user = await User.findOne({ email });
@@ -172,6 +161,8 @@ exports.passwordFind = async (req, res) => {
         return res.status(500).json({ error: "Server error", success: false });
     }
 };
+
+// 파트너 연결
 exports.connectWithPartner = async (req, res) => {
     const { connectCode } = req.body;
 
