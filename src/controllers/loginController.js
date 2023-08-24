@@ -11,12 +11,10 @@ exports.userLogin = async (req, res) => {
 		const user = await User.findOne({ email });
 
 		if (!user || !(await bcrypt.compare(password, user.password))) {
-			return res
-				.status(401)
-				.json({
-					error: "아이디 정보가 확인되지 않습니다.",
-					success: false,
-				});
+			return res.status(401).json({
+				error: "아이디 정보가 확인되지 않습니다.",
+				success: false,
+			});
 		}
 
 		req.session.loggedIn = true;
@@ -29,13 +27,11 @@ exports.userLogin = async (req, res) => {
 		}
 
 		console.log({ message: "Login Success" });
-		return res
-			.status(200)
-			.json({
-				message: "로그인 처리되었습니다.",
-				success: true,
-				redirect: redirectPath,
-			});
+		return res.status(200).json({
+			message: "로그인 처리되었습니다.",
+			success: true,
+			redirect: redirectPath,
+		});
 	} catch (error) {
 		console.error("Error in userLogin.", error);
 		return res.status(500).json({ error: "Server error", success: false });
@@ -53,13 +49,11 @@ exports.userLogout = (req, res) => {
 		}
 
 		console.log({ message: "Logout Success" });
-		return res
-			.status(200)
-			.json({
-				message: "로그아웃 되었습니다.",
-				success: true,
-				redirect: "/login",
-			});
+		return res.status(200).json({
+			message: "로그아웃 되었습니다.",
+			success: true,
+			redirect: "/login",
+		});
 	});
 };
 
@@ -89,12 +83,10 @@ exports.userRegister = async (req, res) => {
 
 		// 비밀번호와 비밀번호 확인의 일치 여부
 		if (password !== confirmPassword) {
-			return res
-				.status(400)
-				.json({
-					error: "비밀번호가 일치하지 않습니다.",
-					success: false,
-				});
+			return res.status(400).json({
+				error: "비밀번호가 일치하지 않습니다.",
+				success: false,
+			});
 		}
 
 		// 비밀번호 암호화
@@ -139,13 +131,11 @@ exports.userRegister = async (req, res) => {
 
 		console.log({ message: "Register success" });
 
-		return res
-			.status(200)
-			.json({
-				message: "회원가입에 성공하였습니다.",
-				success: true,
-				redirect: "/login",
-			});
+		return res.status(200).json({
+			message: "회원가입에 성공하였습니다.",
+			success: true,
+			redirect: "/login",
+		});
 	} catch (error) {
 		console.error("Error in userRegister.", error);
 		return res.status(500).json({ error: "Server error", success: false });
@@ -182,13 +172,11 @@ exports.passwordFind = async (req, res) => {
 
 		console.log({ message: "Sending success" });
 
-		return res
-			.status(200)
-			.json({
-				message: "임시 비밀번호를 이메일로 보냈습니다.",
-				success: true,
-				redirect: "/login",
-			});
+		return res.status(200).json({
+			message: "임시 비밀번호를 이메일로 보냈습니다.",
+			success: true,
+			redirect: "/login",
+		});
 	} catch (error) {
 		console.error("Error in sendingMail.", error);
 		return res.status(500).json({ error: "Server error", success: false });
@@ -206,31 +194,27 @@ exports.connectWithPartner = async (req, res) => {
 		const partnerUser = await User.findOne({ connectCode });
 
 		if (!partnerUser) {
-			return res
-				.status(400)
-				.json({
-					error: "존재하지 않는 초대코드입니다.",
-					success: false,
-				});
+			return res.status(400).json({
+				error: "존재하지 않는 초대코드입니다.",
+				success: false,
+			});
 		}
 
 		currentUser.partnerNickname = partnerUser.nickname;
-		currentUser.partnerId = partnerUser.connectCode;
+		currentUser.partnerId = partnerUser._id;
 
 		partnerUser.partnerNickname = currentUser.nickname;
-		partnerUser.partnerId = currentUser.connectCode;
+		partnerUser.partnerId = currentUser._id;
 
 		await currentUser.save();
 		await partnerUser.save();
 
 		console.log({ message: "Connecting success" });
-		return res
-			.status(200)
-			.json({
-				message: "파트너 연결이 성공적으로 완료되었습니다.",
-				success: true,
-				redirect: "/main",
-			});
+		return res.status(200).json({
+			message: "파트너 연결이 성공적으로 완료되었습니다.",
+			success: true,
+			redirect: "/main",
+		});
 	} catch (error) {
 		console.error("Error while connecting with partner.", error);
 		return res.status(500).json({ error: "Server error" });

@@ -1,4 +1,3 @@
-require("./db");
 const express = require("express");
 const session = require("express-session"); // express-session 미들웨어를 가져와 사용자 세션을 관리합니다.
 const MongoStore = require("connect-mongo"); // MongoDB에 세션 데이터를 저장하기 위해 connect-mongo를 가져옵니다.
@@ -29,9 +28,9 @@ app.use(
 		resave: false,
 		saveUninitialized: true,
 		cookie: {
-			maxAge: 24 * 60 * 60 * 1000,
+			maxAge: 1000 * 60 * 60 * 24,
 		}, // 24 hours 쿠키 유지시간
-		MongoStore: MongoStore.create({
+		store: MongoStore.create({
 			mongoUrl: process.env.DB_URL,
 		}),
 	})
