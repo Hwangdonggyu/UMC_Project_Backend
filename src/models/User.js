@@ -14,6 +14,10 @@ const UserSchema = new mongoose.Schema({
 	connectCode: { type: String, required: true },
 	createdAt: { type: Date, default: Date.now, required: true },
 
+	// 파트너 정보
+	partnerId: { type: String, default: null },
+	partnerNickname: { type: String, default: null },
+
 	// 보낸 편지함
 	sentLetters: [
 		{
