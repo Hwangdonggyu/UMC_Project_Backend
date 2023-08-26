@@ -1,6 +1,8 @@
 const Letter = require("../models/Letter");
 const User = require("../models/User");
 
+const { io } = require("../server");
+
 // 보낸 편지함 내역 보기
 exports.getSentLetters = async (req, res) => {
 	// 로그인 된 회원의 _id 가져옴
@@ -29,11 +31,6 @@ exports.getReceivedLetters = async (req, res) => {
 	const user = await User.findById(_id).populate("receivedLetters");
 
 	return res.status(200).json(user.receivedLetters); // 최신순으로 정렬.
-};
-
-// 편지 보내기 화면 보기.
-exports.getSendLetter = async (req, res) => {
-	return res.render("sendLetter.pug");
 };
 
 // 편지 전송 기능.

@@ -24,11 +24,7 @@ userRouter
 	.get(getReceivedLetters);
 
 //편지 보내기
-userRouter
-	.route("/sendLetter")
-	.all(protectorMiddleware)
-	.get(getSendLetter)
-	.post(postSendLetter);
+userRouter.route("/sendLetter").all(protectorMiddleware).post(postSendLetter);
 
 // 편지 보기
 userRouter
