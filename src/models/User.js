@@ -9,16 +9,24 @@ const UserSchema = new mongoose.Schema({
 	age: { type: Number, required: true },
 	bloodType: { type: String, required: true },
 	imageUrl: { type: String },
-	starteddate: { type: Date, required: true },
+	startedDate: { type: Date, required: true },
 	birthday: { type: Date, required: true },
-	connectCode: { type: String, required: true},
+	connectCode: { type: String, required: true },
 	createdAt: { type: Date, default: Date.now, required: true },
+
+	// 파트너 정보
+	partnerId: { type: String, default: null },
+	partnerNickname: { type: String, default: null },
+
+	// 보낸 편지함
 	sentLetters: [
 		{
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Letter",
 		},
 	],
+
+	// 받은 편지함
 	receivedLetters: [
 		{
 			type: mongoose.Schema.Types.ObjectId,
@@ -33,12 +41,6 @@ const UserSchema = new mongoose.Schema({
 const User = mongoose.model("User", UserSchema);
 
 module.exports = User;
-
-
-
-
-
-
 
 // username:    { type: String, required: true },
 // 	email:       { type: String, required: true, unique: true },
@@ -57,7 +59,6 @@ module.exports = User;
 // 	partnerNickname: { type: String, dafult: null },
 // 	partnerId:   { type: String, default: null },
 // 	createdAt:   { type: Date  , default: Date.now, required: true },
-
 
 // sentLetters: [
 // 		{

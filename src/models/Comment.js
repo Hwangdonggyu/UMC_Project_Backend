@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const date = require('../config/moment');
+const date = require("../config/moment");
 
 const commentSchema = new mongoose.Schema({
 	diary: {
@@ -10,7 +10,7 @@ const commentSchema = new mongoose.Schema({
 	parentComment: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Comment",
-		required: false
+		required: false,
 	},
 	writer: {
 		type: mongoose.Types.ObjectId,
@@ -24,13 +24,13 @@ const commentSchema = new mongoose.Schema({
 	},
 	isDeleted: {
 		type: Boolean,
-		default: false
+		default: false,
 	},
 	createdAt: {
 		type: String,
 		default: date(),
 		required: true,
-	}
+	},
 });
 
 const Comment = mongoose.model("Comment", commentSchema);
