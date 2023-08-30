@@ -9,6 +9,7 @@ const loginRouter = require("./routers/loginRouter.js");
 const profileRouter = require("./routers/profileRouter.js");
 const bannedWordRouter = require("./routers/bannedWordRouter.js");
 const diaryRouter = require("./routers/diaryRouter.js");
+const userRouter = require("./routers/userRouter.js")
 
 const app = express();
 
@@ -41,5 +42,6 @@ app.use("/letters", letterRouter);
 app.use("/profile", profileRouter);
 app.use("/diary", diaryRouter);
 app.use("/bannedWord", bannedWordRouter);
+app.use('/user', userRouter)
 
 module.exports = app;
